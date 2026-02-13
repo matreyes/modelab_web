@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}About — modelab{% endblock title %}
+
+{% block content %}
+<section class="max-w-4xl mx-auto px-6 py-24">
+
+  <h1 class="font-light mb-6" style="font-size:clamp(36px,6vw,56px); letter-spacing:-0.04em; color:#536942;">
+    about us
+  </h1>
+
+  <p class="text-xl font-light leading-relaxed mb-16 max-w-2xl" style="color:rgba(82,104,64,0.8);">
+    We are a data consulting and R&amp;D company building solutions in massive data analysis and engineering.
+    We solve the challenges and build the infrastructure that power data businesses.
+  </p>
+
+  <div class="grid md:grid-cols-2 gap-12 mb-20">
+    <div>
+      <h2 class="text-2xl font-light mb-4" style="color:#536942; letter-spacing:-0.03em;">Our Mission</h2>
+      <p class="leading-relaxed" style="color:rgba(82,104,64,0.75);">
+        To build data infrastructures, pipelines, and solutions that maximize value return by enabling
+        and accelerating growth at scale.
+      </p>
+    </div>
+    <div>
+      <h2 class="text-2xl font-light mb-4" style="color:#536942; letter-spacing:-0.03em;">Our Values</h2>
+      <p class="leading-relaxed" style="color:rgba(82,104,64,0.75);">
+        Our know-how and networks allow us to deploy state-of-the-art data solutions, which we specifically
+        select for maximizing growth, robustness, and operability.
+      </p>
+    </div>
+  </div>
+
+  <!-- Quote -->
+  <div class="border-l-4 pl-8 py-2" style="border-color:#ffd936;">
+    <blockquote class="text-xl font-light italic leading-relaxed mb-4" style="color:#536942;">
+      "We embed our data engineers in key teams in our clients' organizations, accelerating the deployment
+      of data solutions that enable complex and massive data operations."
+    </blockquote>
+    <p class="text-sm font-medium" style="color:rgba(82,104,64,0.6);">Matías Reyes, CEO</p>
+  </div>
+
+</section>
+{% endblock content %}

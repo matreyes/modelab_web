@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Services — modelab{% endblock title %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="py-20 px-6 text-center" style="background-color:#f6f8f5;">
+  <h1 class="font-light mb-4" style="font-size:clamp(36px,6vw,56px); letter-spacing:-0.04em; color:#536942;">
+    our services
+  </h1>
+  <div class="flex justify-center">
+    <div class="h-0.5 w-16" style="background-color:#ffd936;"></div>
+  </div>
+</section>
+
+<!-- Services grid -->
+<section class="max-w-5xl mx-auto px-6 pb-24">
+  <div class="grid md:grid-cols-2 gap-8">
+
+    <div class="bg-white p-8 rounded">
+      <div class="mb-4">
+        <img src="/images/outsourcing.png" alt="Outsourcing" class="w-24 rounded">
+      </div>
+      <h2 class="text-xl font-medium mb-3" style="color:#536942;">Outsourcing</h2>
+      <p class="leading-relaxed" style="color:rgba(82,104,64,0.75);">
+        Grow fast and flexibly. Hire our services to embed our data engineer in key points of your organization,
+        accelerating development as needed while your business scales up.
+      </p>
+    </div>
+
+    <div class="bg-white p-8 rounded">
+      <div class="mb-4">
+        <img src="/images/consulting.png" alt="Consulting" class="w-24 rounded">
+      </div>
+      <h2 class="text-xl font-medium mb-3" style="color:#536942;">Consulting</h2>
+      <p class="leading-relaxed" style="color:rgba(82,104,64,0.75);">
+        Solve complex problems. Task our data and business experts with challenging problems.
+        We have more than 10 years of experience solving problems at the intersection of massive data,
+        advanced algorithmics, and industries including defense, construction, logistics, retail, e-commerce,
+        media, and education.
+      </p>
+    </div>
+
+    <div class="bg-white p-8 rounded">
+      <div class="mb-4">
+        <img src="/images/algorithmics.png" alt="Algorithmics" class="w-24 rounded">
+      </div>
+      <h2 class="text-xl font-medium mb-3" style="color:#536942;">Algorithmics</h2>
+      <p class="leading-relaxed" style="color:rgba(82,104,64,0.75);">
+        Order algorithms as solutions and outsource R&amp;D-intensive Data Science. We have more than 10 years
+        of experience working with all branches of Machine Learning in diverse industrial settings.
+      </p>
+    </div>
+
+    <div class="bg-white p-8 rounded">
+      <div class="mb-4">
+        <img src="/images/software.jpg" alt="Software" class="w-24 rounded">
+      </div>
+      <h2 class="text-xl font-medium mb-3" style="color:#536942;">Software &amp; Service Platforms</h2>
+      <p class="leading-relaxed" style="color:rgba(82,104,64,0.75);">
+        Develop with us software projects delivering user-ready platforms managing large businesses and client bases.
+        Let us build the platforms on which your business can rely.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Quick Facts -->
+  <div class="mt-16 pt-16 border-t border-gray-200">
+    <h2 class="text-2xl font-light text-center mb-12" style="color:#536942; letter-spacing:-0.03em;">Quick Facts</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <div>
+        <p class="text-4xl font-light mb-2" style="color:#ffd936;">11</p>
+        <p class="text-sm leading-snug" style="color:rgba(82,104,64,0.75);">years working on big data and data science</p>
+      </div>
+      <div>
+        <p class="text-4xl font-light mb-2" style="color:#ffd936;">🌍</p>
+        <p class="text-sm leading-snug" style="color:rgba(82,104,64,0.75);">Working with clients across industries across the world</p>
+      </div>
+      <div>
+        <p class="text-4xl font-light mb-2" style="color:#ffd936;">🎓</p>
+        <p class="text-sm leading-snug" style="color:rgba(82,104,64,0.75);">We hire the best talent from diverse disciplines, from maths to business</p>
+      </div>
+      <div>
+        <p class="text-4xl font-light mb-2" style="color:#ffd936;">🚀</p>
+        <p class="text-sm leading-snug" style="color:rgba(82,104,64,0.75);">We proudly adopt the latest science and tech to drive client revenue</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock content %}

@@ -1,0 +1,8 @@
+base_url = "https://modelab.cl"
+title = "modelab"
+description = "We build the data economy"
+compile_sass = true
+minify_html = false
+build_search_index = false
+
+[extra]

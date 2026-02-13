@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --yellow: #ffd936;
+    --yellow-dark: #dab200;
+    --green: #536942;
+    --green-light: rgba(82, 104, 64, 0.75);
+    --bg: #f6f8f5;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: var(--bg);
+    color: var(--green);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    color: var(--green);
+  }
+}

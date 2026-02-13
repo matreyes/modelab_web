@@ -1,0 +1,7 @@
+public/
+node_modules/
+package-lock.json
+static/style.css
+zola.log
+*.log
+.DS_Store

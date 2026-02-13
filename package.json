@@ -1,0 +1,15 @@
+{
+  "name": "modelab_web",
+  "version": "1.0.0",
+  "scripts": {
+    "css:build": "postcss sass/input.css -o static/style.css",
+    "css:watch": "postcss sass/input.css -o static/style.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "autoprefixer": "^10.4.24",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1",
+    "tailwindcss": "^4.1.18"
+  }
+}

@@ -2,11 +2,20 @@
 {% block title %}About — modelab{% endblock title %}
 
 {% block content %}
-<section class="max-w-4xl mx-auto px-6 py-24">
 
-  <h1 class="font-light mb-6" style="font-size:clamp(36px,6vw,56px); letter-spacing:-0.04em; color:#536942;">
-    about us
-  </h1>
+<!-- HERO -->
+<section class="relative flex items-center justify-center text-center overflow-hidden"
+  style="min-height:300px; background-image:url('/images/hero-about.png'); background-size:cover; background-position:center;">
+  <div class="absolute inset-0" style="background:rgba(0,0,0,0.3);"></div>
+  <div class="relative z-10">
+    <h1 style="font-family:'Forum',serif; font-size:clamp(42px,6vw,64px); color:#ffffff; font-weight:400; letter-spacing:-1px; margin:0;">
+      about us
+    </h1>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<section class="max-w-4xl mx-auto px-6 py-24">
 
   <p class="text-xl font-light leading-relaxed mb-16 max-w-2xl" style="color:rgba(82,104,64,0.8);">
     We are a data consulting and R&amp;D company building solutions in massive data analysis and engineering.

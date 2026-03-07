@@ -62,6 +62,13 @@
     .hero-tagline {
       color: rgba(255,255,255,0.8); font-size: 50px; font-weight: 300;
       letter-spacing: -3px; margin: 0; line-height: 1.1;
+      opacity: 0;
+      transform: translateY(-55px);
+      transition: opacity 0.65s ease, transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .hero-tagline.revealed {
+      opacity: 1;
+      transform: translateY(0);
     }
     .hero-title {
       color: #ffffff; font-size: 117px; font-weight: 300;
@@ -250,6 +257,51 @@
   <footer class="site-footer">
     <p class="footer-copy">© modelab 2023</p>
   </footer>
+
+  <script>
+    (function () {
+      var tagline = document.querySelector('.hero-tagline');
+      if (!tagline) return;
+
+      var revealed = false;
+      var animating = false;
+
+      function reveal() {
+        if (revealed || animating) return;
+        animating = true;
+        tagline.classList.add('revealed');
+      }
+
+      tagline.addEventListener('transitionend', function (e) {
+        if (e.propertyName === 'transform' && animating) {
+          animating = false;
+          revealed = true;
+          // Unlock scroll
+          window.removeEventListener('wheel', blockScroll);
+          window.removeEventListener('touchmove', blockTouchScroll);
+        }
+      });
+
+      function blockScroll(e) {
+        // Only block downward scroll before reveal is done
+        if (!revealed) {
+          e.preventDefault();
+          reveal();
+        }
+      }
+
+      function blockTouchScroll(e) {
+        if (!revealed) {
+          e.preventDefault();
+          reveal();
+        }
+      }
+
+      // Intercept scroll until tagline finishes animating
+      window.addEventListener('wheel', blockScroll, { passive: false });
+      window.addEventListener('touchmove', blockTouchScroll, { passive: false });
+    })();
+  </script>
 
 </body>
 </html>

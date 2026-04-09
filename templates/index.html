@@ -238,8 +238,9 @@
 
   <!-- FOOTER -->
   <footer class="site-footer">
-    <p class="footer-copy">© modelab 2023</p>
+    <p class="footer-copy">© modelab <span id="footer-year"></span></p>
   </footer>
+  <script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
 
   <!-- Motion Animations -->
   <script>

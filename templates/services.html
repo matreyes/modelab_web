@@ -122,7 +122,7 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
       
       <div class="fact-item" id="fact1">
-        <p class="fact-number" id="counter1">0</p>
+        <p class="fact-number" id="counter1" data-start-year="2012">0</p>
         <p class="text-sm leading-snug" style="color:rgba(82,104,64,0.75);">years working on big data and data science</p>
       </div>
       
@@ -155,7 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
       el.style.opacity = '1';
       el.style.transform = 'none';
     });
-    document.getElementById('counter1').textContent = '11';
+    // Set counter directly
+    const counterEl = document.getElementById('counter1');
+    const startYear = parseInt(counterEl.dataset.startYear);
+    counterEl.textContent = new Date().getFullYear() - startYear;
     return;
   }
   
@@ -217,4 +220,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-{% endblock content %}
+{% endblock content %}}

@@ -4,54 +4,31 @@
 {% block content %}
 
 <style>
-  /* Service section animations */
-  .service-row {
-    opacity: 0;
-  }
-  .service-row-image {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  .service-row-text {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-  .service-row.reverse .service-row-image {
-    transform: translateX(30px);
-  }
-  .service-row.reverse .service-row-text {
-    transform: translateX(-30px);
-  }
+  /* Service rows - initial hidden state */
+  .service-row { opacity: 1; }
+  .service-row-image { opacity: 0; transform: translateX(-40px); }
+  .service-row-text { opacity: 0; transform: translateX(40px); }
+  .service-row.reverse .service-row-image { transform: translateX(40px); }
+  .service-row.reverse .service-row-text { transform: translateX(-40px); }
 
-  /* Quick Facts - Counter animation */
+  /* Quick Facts */
+  .facts-title { opacity: 0; transform: translateY(20px); }
+  .fact-item { opacity: 0; transform: translateY(25px); }
   .fact-number {
-    font-size: 3.5rem;
-    font-weight: 300;
-    color: #ffd936;
-    font-family: 'Forum', display;
+    font-size: 3.5rem; font-weight: 300; color: #ffd936;
+    font-family: 'Forum', serif; margin-bottom: 0.5rem;
   }
-  .fact-item {
-    opacity: 0;
-    transform: translateY(20px);
-  }
+  .fact-icon { font-size: 3.5rem; color: #ffd936; }
 
-  /* Hover effects */
-  .service-image-container {
-    overflow: hidden;
-    border-radius: 0;
-  }
-  .service-image-container img {
-    transition: transform 0.4s ease;
-  }
-  .service-image-container:hover img {
-    transform: scale(1.05);
-  }
+  /* Image hover */
+  .service-image-wrap { overflow: hidden; }
+  .service-image-wrap img { transition: transform 0.35s ease; will-change: transform; }
+  .service-image-wrap:hover img { transform: scale(1.06); }
 
   /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
-    .service-row, .service-row-image, .service-row-text, .fact-item {
-      opacity: 1 !important;
-      transform: none !important;
+    .service-row-image, .service-row-text, .facts-title, .fact-item {
+      opacity: 1; transform: none;
     }
   }
 </style>
@@ -59,9 +36,9 @@
 <!-- HERO -->
 <section class="relative flex items-center justify-center text-center overflow-hidden"
   style="min-height:300px; background-image:url('/images/hero-services.png'); background-size:cover; background-position:center;">
-  <div class="absolute inset-0" id="hero-overlay" style="background:rgba(0,0,0,0.3);"></div>
+  <div class="absolute inset-0" id="hero-overlay" style="background:rgba(0,0,0,0.35); opacity:0;"></div>
   <div class="relative z-10">
-    <h1 id="hero-title" style="font-family:'Forum',serif; font-size:clamp(42px,6vw,64px); color:#ffffff; font-weight:400; letter-spacing:-1px; margin:0;">
+    <h1 id="hero-title" style="font-family:'Forum',serif; font-size:clamp(42px,6vw,64px); color:#ffffff; font-weight:400; letter-spacing:-1px; margin:0; opacity:0; transform:translateY(20px);">
       our services
     </h1>
   </div>
@@ -72,7 +49,7 @@
 
   <!-- Consulting: image left, text right -->
   <div class="service-row flex flex-col md:flex-row items-stretch" id="row1">
-    <div class="service-row-image w-full md:w-1/2 service-image-container">
+    <div class="service-row-image w-full md:w-1/2 service-image-wrap">
       <img src="/images/consulting.png" alt="Consulting" class="w-full h-full" style="object-fit:cover; min-height:320px; display:block;">
     </div>
     <div class="service-row-text w-full md:w-1/2 flex items-center px-12 py-16" style="background:#f6f8f5;">
@@ -90,7 +67,7 @@
 
   <!-- Outsourcing: text left, image right -->
   <div class="service-row reverse flex flex-col md:flex-row-reverse items-stretch" id="row2">
-    <div class="service-row-image w-full md:w-1/2 service-image-container">
+    <div class="service-row-image w-full md:w-1/2 service-image-wrap">
       <img src="/images/outsourcing.png" alt="Outsourcing" class="w-full h-full" style="object-fit:cover; min-height:320px; display:block;">
     </div>
     <div class="service-row-text w-full md:w-1/2 flex items-center px-12 py-16" style="background:#ffffff;">
@@ -106,7 +83,7 @@
 
   <!-- Software: image left, text right -->
   <div class="service-row flex flex-col md:flex-row items-stretch" id="row3">
-    <div class="service-row-image w-full md:w-1/2 service-image-container">
+    <div class="service-row-image w-full md:w-1/2 service-image-wrap">
       <img src="/images/software.jpg" alt="Software" class="w-full h-full" style="object-fit:cover; min-height:320px; display:block;">
     </div>
     <div class="service-row-text w-full md:w-1/2 flex items-center px-12 py-16" style="background:#f6f8f5;">
@@ -122,7 +99,7 @@
 
   <!-- Algorithmics: text left, image right -->
   <div class="service-row reverse flex flex-col md:flex-row-reverse items-stretch" id="row4">
-    <div class="service-row-image w-full md:w-1/2 service-image-container">
+    <div class="service-row-image w-full md:w-1/2 service-image-wrap">
       <img src="/images/algorithmics.png" alt="Algorithmics" class="w-full h-full" style="object-fit:cover; min-height:320px; display:block;">
     </div>
     <div class="service-row-text w-full md:w-1/2 flex items-center px-12 py-16" style="background:#ffffff;">
@@ -141,27 +118,27 @@
 <!-- Quick Facts -->
 <section id="facts-section" class="py-20 px-6" style="background:#f6f8f5;">
   <div class="max-w-5xl mx-auto">
-    <h2 id="facts-title" class="text-2xl font-light text-center mb-12" style="color:#536942; letter-spacing:-0.03em; opacity:0; transform:translateY(20px);">Quick Facts</h2>
+    <h2 class="facts-title text-2xl font-light text-center mb-12" style="color:#536942; letter-spacing:-0.03em;">Quick Facts</h2>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
       
       <div class="fact-item" id="fact1">
-        <p class="fact-number" data-target="11">0</p>
+        <p class="fact-number" id="counter1">0</p>
         <p class="text-sm leading-snug" style="color:rgba(82,104,64,0.75);">years working on big data and data science</p>
       </div>
       
       <div class="fact-item" id="fact2">
-        <p class="fact-number"><i class="fa-solid fa-earth-americas"></i></p>
+        <p class="fact-icon"><i class="fa-solid fa-earth-americas"></i></p>
         <p class="text-sm leading-snug" style="color:rgba(82,104,64,0.75);">Working with clients across industries across the world</p>
       </div>
       
       <div class="fact-item" id="fact3">
-        <p class="fact-number"><i class="fa-solid fa-graduation-cap"></i></p>
-        <p class="text-sm leading-snug" style="color:rgba(82,104,64,0.75);">We hire the best talent from diverse disciplines, from maths to business</p>
+        <p class="fact-icon"><i class="fa-solid fa-graduation-cap"></i></p>
+        <p class="text-sm leading-snug" style="color:rgba(82,104,64,0.75);">We hire the best talent from diverse disciplines</p>
       </div>
       
       <div class="fact-item" id="fact4">
-        <p class="fact-number"><i class="fa-solid fa-rocket"></i></p>
-        <p class="text-sm leading-snug" style="color:rgba(82,104,64,0.75);">We proudly adopt the latest science and tech to drive client revenue</p>
+        <p class="fact-icon"><i class="fa-solid fa-rocket"></i></p>
+        <p class="text-sm leading-snug" style="color:rgba(82,104,64,0.75);">We adopt the latest science and tech</p>
       </div>
     
     </div>
@@ -170,97 +147,74 @@
 
 <!-- Motion Animations -->
 <script>
-  const { animate, stagger, inView, scroll } = Motion;
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  if (!prefersReducedMotion) {
-
-    // === HERO ===
-    animate('#hero-overlay', { opacity: 0 }, { duration: 0 });
-    animate('#hero-title', { opacity: 0, y: 20 }, { duration: 0 });
-
-    animate('#hero-overlay', { opacity: 1 }, { duration: 0.4 });
-    animate('#hero-title', { opacity: 1, y: 0 }, { duration: 0.6, delay: 0.2, easing: 'ease-out' });
-
-    // === SERVICE ROWS - Alternating slide-in ===
-    const rows = ['.service-row'];
-    
-    rows.forEach((selector, i) => {
-      inView(selector, () => {
-        // Animate the row itself
-        animate(selector, { opacity: 1 }, { duration: 0.3 });
-        
-        // Animate image and text with alternating directions
-        animate(`${selector} .service-row-image`, 
-          { opacity: 1, x: 0 }, 
-          { duration: 0.7, delay: 0.1, easing: [0.22, 1, 0.36, 1] }
-        );
-        animate(`${selector} .service-row-text`, 
-          { opacity: 1, x: 0 }, 
-          { duration: 0.7, delay: 0.2, easing: [0.22, 1, 0.36, 1] }
-        );
-      }, { margin: '-50px' });
-    });
-
-    // Alternative: stagger all rows in sequence
-    inView('#row1', () => {
-      animate('#row1', { opacity: 1 }, { duration: 0.3 });
-      animate('#row1 .service-row-image', { opacity: 1, x: 0 }, { duration: 0.6, delay: 0.1 });
-      animate('#row1 .service-row-text', { opacity: 1, x: 0 }, { duration: 0.6, delay: 0.2 });
-    }, { margin: '-50px' });
-
-    inView('#row2', () => {
-      animate('#row2', { opacity: 1 }, { duration: 0.3 });
-      animate('#row2 .service-row-image', { opacity: 1, x: 0 }, { duration: 0.6, delay: 0.1 });
-      animate('#row2 .service-row-text', { opacity: 1, x: 0 }, { duration: 0.6, delay: 0.2 });
-    }, { margin: '-50px' });
-
-    inView('#row3', () => {
-      animate('#row3', { opacity: 1 }, { duration: 0.3 });
-      animate('#row3 .service-row-image', { opacity: 1, x: 0 }, { duration: 0.6, delay: 0.1 });
-      animate('#row3 .service-row-text', { opacity: 1, x: 0 }, { duration: 0.6, delay: 0.2 });
-    }, { margin: '-50px' });
-
-    inView('#row4', () => {
-      animate('#row4', { opacity: 1 }, { duration: 0.3 });
-      animate('#row4 .service-row-image', { opacity: 1, x: 0 }, { duration: 0.6, delay: 0.1 });
-      animate('#row4 .service-row-text', { opacity: 1, x: 0 }, { duration: 0.6, delay: 0.2 });
-    }, { margin: '-50px' });
-
-    // === QUICK FACTS ===
-    inView('#facts-title', () => {
-      animate('#facts-title', { opacity: 1, y: 0 }, { duration: 0.5, easing: 'ease-out' });
-      
-      // Stagger fact items
-      animate('.fact-item', { opacity: 1, y: 0 }, {
-        duration: 0.5,
-        delay: stagger(0.12),
-        easing: 'ease-out'
-      });
-
-      // Animate number counter
-      const numberEl = document.querySelector('[data-target]');
-      if (numberEl) {
-        const target = parseInt(numberEl.dataset.target);
-        animate(
-          (progress) => {
-            numberEl.textContent = Math.round(progress * target);
-          },
-          { duration: 1.5, delay: 0.5, easing: 'ease-out' }
-        );
-      }
-    }, { margin: '-50px' });
-
-  } else {
-    // Reduced motion: show all
-    document.querySelectorAll('.service-row, .service-row-image, .service-row-text, .fact-item, #facts-title, #hero-overlay, #hero-title').forEach(el => {
+document.addEventListener('DOMContentLoaded', () => {
+  if (!window.Motion) {
+    console.warn('Motion not available');
+    // Fallback: show everything
+    document.querySelectorAll('.service-row-image, .service-row-text, .facts-title, .fact-item, #hero-overlay, #hero-title').forEach(el => {
       el.style.opacity = '1';
       el.style.transform = 'none';
     });
-    // Set number directly
-    const numberEl = document.querySelector('[data-target]');
-    if (numberEl) numberEl.textContent = numberEl.dataset.target;
+    document.getElementById('counter1').textContent = '11';
+    return;
   }
+  
+  const { animate, stagger, inView, scroll } = window.Motion;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (prefersReducedMotion) {
+    document.querySelectorAll('.service-row-image, .service-row-text, .facts-title, .fact-item, #hero-overlay, #hero-title').forEach(el => {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
+    document.getElementById('counter1').textContent = '11';
+    return;
+  }
+
+  // === HERO ===
+  animate('#hero-overlay', { opacity: 1 }, { duration: 0.4 });
+  animate('#hero-title', { opacity: 1, y: 0 }, { duration: 0.6, delay: 0.2 });
+
+  // === SERVICE ROWS ===
+  ['row1', 'row2', 'row3', 'row4'].forEach((id, i) => {
+    inView(`#${id}`, () => {
+      animate(`#${id} .service-row-image`, { opacity: 1, x: 0 }, { duration: 0.65, delay: 0.05, easing: [0.22, 1, 0.36, 1] });
+      animate(`#${id} .service-row-text`, { opacity: 1, x: 0 }, { duration: 0.65, delay: 0.15, easing: [0.22, 1, 0.36, 1] });
+    }, { margin: '-80px' });
+  });
+
+  // === QUICK FACTS ===
+  inView('.facts-title', () => {
+    animate('.facts-title', { opacity: 1, y: 0 }, { duration: 0.5 });
+    
+    animate('.fact-item', { opacity: 1, y: 0 }, { duration: 0.5, delay: stagger(0.1), easing: 'ease-out' });
+
+    // Counter animation: 0 → 11
+    const counterEl = document.getElementById('counter1');
+    const target = 11;
+    
+    // Custom animation function
+    let startTime = null;
+    const durationMs = 1200;
+    const startDelay = 400;
+    
+    setTimeout(() => {
+      const animateCounter = (timestamp) => {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / durationMs, 1);
+        
+        // Ease-out
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(eased * target);
+        counterEl.textContent = current;
+        
+        if (progress < 1) requestAnimationFrame(animateCounter);
+      };
+      requestAnimationFrame(animateCounter);
+    }, startDelay);
+    
+  }, { margin: '-80px' });
+});
 </script>
 
 {% endblock content %}

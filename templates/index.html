@@ -9,6 +9,9 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Forum&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous">
+  <!-- Motion One -->
+  <script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.min.js"></script>
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; background-color: #f6f8f5; color: #536942; }
@@ -19,7 +22,9 @@
       position: sticky; top: 0; left: 0; right: 0; z-index: 50;
       padding: 0 2rem; height: 80px;
       display: flex; align-items: center; justify-content: space-between;
-      background: #ffffff; border-bottom: 1px solid #e5e7eb;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #e5e7eb;
     }
     .site-header > a { display: flex; align-items: center; }
     .nav-links { display: flex; gap: 2rem; }
@@ -47,7 +52,7 @@
       background: none; border: none; font-size: 1.5rem; color: #536942; cursor: pointer;
     }
 
-    /* HERO */
+    /* HERO - Modern parallax */
     .hero {
       position: relative; min-height: 605px; padding-top: 50px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -62,20 +67,23 @@
     .hero-tagline {
       color: rgba(255,255,255,0.8); font-size: 50px; font-weight: 300;
       letter-spacing: -3px; margin: 0; line-height: 1.1;
-      opacity: 0;
-      transform: translateY(-55px);
-      transition: opacity 0.65s ease, transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .hero-tagline.revealed {
-      opacity: 1;
-      transform: translateY(0);
     }
     .hero-title {
       color: #ffffff; font-size: 117px; font-weight: 300;
       letter-spacing: -3px; line-height: 1; margin-top: -50px; margin-bottom: 0;
     }
 
-    /* SERVICES */
+    /* Animated floating elements */
+    .hero-float {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(255, 217, 54, 0.15);
+      z-index: 5;
+    }
+
+    /* SERVICES - Cards with hover effects */
     .services-section {
       padding: 70px 1.5rem; background-color: #f6f8f5;
     }
@@ -88,40 +96,68 @@
     .services-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 0;
+      gap: 1.5rem;
       max-width: 1200px;
       margin: 0 auto;
     }
     .service-card {
-      display: flex; flex-direction: column; padding: 15px;
+      display: flex; flex-direction: column; padding: 20px;
+      background: #ffffff;
+      border-radius: 12px;
+      cursor: pointer;
     }
-    .service-card-img { width: 100%; margin-bottom: 1rem; }
-    .service-card-img img { width: 100%; border-radius: 4px; display: block; aspect-ratio: 1/1; object-fit: cover; }
+    .service-card-img {
+      width: 100%; margin-bottom: 1rem;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .service-card-img img {
+      width: 100%; border-radius: 8px; display: block;
+      aspect-ratio: 1/1; object-fit: cover;
+    }
     .service-card h3 {
-      font-family: 'Forum', display; color: #536942; font-size: 20px; font-weight: 400; margin: 0 0 9px;
+      font-family: 'Forum', display; color: #536942;
+      font-size: 20px; font-weight: 400; margin: 0 0 9px;
     }
     .service-card p {
-      color: rgba(82,104,64,0.75); font-size: 14px; line-height: 1.6; margin: 0;
+      color: rgba(82,104,64,0.75); font-size: 14px;
+      line-height: 1.6; margin: 0;
     }
 
-    /* CTA */
+    /* Service card number badge */
+    .service-num {
+      position: absolute; top: 12px; right: 12px;
+      width: 32px; height: 32px;
+      background: #ffd936;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 500; color: #536942;
+    }
+
+    /* CTA - Glassmorphism style */
     .cta-section {
       position: relative; min-height: 480px; padding: 8rem 1.5rem;
       display: flex; align-items: center; justify-content: center; text-align: center;
       background-image: url('/images/cta-bg.png');
       background-size: cover; background-position: bottom center;
     }
-    .cta-content { position: relative; z-index: 10; padding: 0 1.5rem; }
+    .cta-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 24px;
+      padding: 3rem 4rem;
+    }
     .cta-section h2 {
       color: #ffffff; font-size: 58px; font-weight: 300;
       letter-spacing: -2px; margin: 0 0 2rem;
     }
     .cta-btn {
       display: inline-block; background-color: #ffd936; color: #536942;
-      font-weight: 400; font-size: 1rem; border-radius: 4px;
-      padding: 17px 40px; transition: opacity 0.2s;
+      font-weight: 500; font-size: 1rem; border-radius: 8px;
+      padding: 17px 40px; border: none;
+      cursor: pointer;
     }
-    .cta-btn:hover { opacity: 0.88; }
 
     /* FOOTER */
     .site-footer {
@@ -135,6 +171,7 @@
       .hero-tagline { font-size: 28px; letter-spacing: -1px; }
       .hero-title { font-size: 72px; letter-spacing: -2px; margin-top: -28px; }
       .cta-section h2 { font-size: 36px; }
+      .cta-card { padding: 2rem; }
       .services-grid { grid-template-columns: 1fr; }
       .nav-links { display: none; }
       .hamburger-btn { display: block; }
@@ -147,6 +184,15 @@
     @media (min-width: 1024px) {
       .hamburger-btn { display: none; }
       .nav-links { display: flex; }
+    }
+
+    /* Accessibility: reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 </head>
@@ -181,26 +227,32 @@
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-overlay"></div>
+    <div class="hero-overlay" id="hero-overlay"></div>
+    
+    <!-- Floating animated circles -->
+    <div class="hero-float" id="float1" style="top: 20%; left: 10%;"></div>
+    <div class="hero-float" id="float2" style="top: 60%; right: 15%; width: 80px; height: 80px;"></div>
+    <div class="hero-float" id="float3" style="bottom: 30%; left: 20%; width: 40px; height: 40px;"></div>
+    
     <div class="hero-content">
-      <p class="hero-tagline">we build the data economy</p>
-      <h1 class="hero-title">modelab</h1>
+      <p class="hero-tagline" id="hero-tagline">we build the data economy</p>
+      <h1 class="hero-title" id="hero-title">modelab</h1>
     </div>
   </section>
 
   <!-- SERVICES -->
   <section id="services" class="services-section">
-    <h2>Our Services</h2>
+    <h2 id="services-title">Our Services</h2>
     <div class="services-divider-wrap">
-      <div class="services-divider"></div>
+      <div class="services-divider" id="services-divider"></div>
     </div>
 
     <div class="services-grid">
 
       <!-- Outsourcing -->
-      <div class="service-card">
+      <div class="service-card" id="card1">
         <div class="service-card-img">
-          <img src="/images/outsourcing.png" alt="Outsourcing">
+          <img src="/images/outsourcing.png" alt="Outsourcing" id="img1">
         </div>
         <div>
           <h3>Outsourcing</h3>
@@ -209,9 +261,9 @@
       </div>
 
       <!-- Consulting -->
-      <div class="service-card">
+      <div class="service-card" id="card2">
         <div class="service-card-img">
-          <img src="/images/consulting.png" alt="Consulting">
+          <img src="/images/consulting.png" alt="Consulting" id="img2">
         </div>
         <div>
           <h3>Consulting</h3>
@@ -220,9 +272,9 @@
       </div>
 
       <!-- Algorithmics -->
-      <div class="service-card">
+      <div class="service-card" id="card3">
         <div class="service-card-img">
-          <img src="/images/algorithmics.png" alt="Algorithmics">
+          <img src="/images/algorithmics.png" alt="Algorithmics" id="img3">
         </div>
         <div>
           <h3>Algorithmics</h3>
@@ -231,9 +283,9 @@
       </div>
 
       <!-- Software -->
-      <div class="service-card">
+      <div class="service-card" id="card4">
         <div class="service-card-img">
-          <img src="/images/software.jpg" alt="Software">
+          <img src="/images/software.jpg" alt="Software" id="img4">
         </div>
         <div>
           <h3>Software</h3>
@@ -241,15 +293,14 @@
         </div>
       </div>
 
-
     </div>
   </section>
 
   <!-- CONTACT CTA -->
   <section id="contact" class="cta-section">
-    <div class="cta-content">
-      <h2>Contact us</h2>
-      <a href="mailto:contact@modelab.cl" class="cta-btn">Email us</a>
+    <div class="cta-card" id="cta-card">
+      <h2 id="cta-title">Contact us</h2>
+      <a href="mailto:contact@modelab.cl" class="cta-btn" id="cta-btn">Email us</a>
     </div>
   </section>
 
@@ -258,49 +309,105 @@
     <p class="footer-copy">© modelab 2023</p>
   </footer>
 
+  <!-- Motion Animations -->
   <script>
-    (function () {
-      var tagline = document.querySelector('.hero-tagline');
-      if (!tagline) return;
+    const { animate, stagger, inView, scroll } = Motion;
 
-      var revealed = false;
-      var animating = false;
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      function reveal() {
-        if (revealed || animating) return;
-        animating = true;
-        tagline.classList.add('revealed');
-      }
+    if (!prefersReducedMotion) {
+      
+      // === HERO ANIMATIONS ===
+      // Initial state: hidden
+      animate('#hero-tagline', { opacity: 0, y: -30 }, { duration: 0 });
+      animate('#hero-title', { opacity: 0, y: 20 }, { duration: 0 });
+      animate('#hero-overlay', { opacity: 0 }, { duration: 0 });
 
-      tagline.addEventListener('transitionend', function (e) {
-        if (e.propertyName === 'transform' && animating) {
-          animating = false;
-          revealed = true;
-          // Unlock scroll
-          window.removeEventListener('wheel', blockScroll);
-          window.removeEventListener('touchmove', blockTouchScroll);
-        }
+      // Animate on load
+      animate('#hero-overlay', { opacity: 1 }, { duration: 0.5 });
+      animate('#hero-tagline', { opacity: 1, y: 0 }, { duration: 0.8, delay: 0.3, easing: 'ease-out' });
+      animate('#hero-title', { opacity: 1, y: 0 }, { duration: 1, delay: 0.5, easing: [0.22, 1, 0.36, 1] });
+
+      // Floating elements - continuous subtle motion
+      animate('#float1', 
+        { y: [0, -20, 0], scale: [1, 1.1, 1] },
+        { duration: 4, repeat: Infinity, easing: 'ease-in-out' }
+      );
+      animate('#float2',
+        { y: [0, 15, 0], x: [0, 10, 0] },
+        { duration: 5, repeat: Infinity, easing: 'ease-in-out', delay: 0.5 }
+      );
+      animate('#float3',
+        { y: [0, -10, 0], rotate: [0, 10, 0] },
+        { duration: 3.5, repeat: Infinity, easing: 'ease-in-out', delay: 1 }
+      );
+
+      // Parallax on scroll
+      scroll(
+        animate('.hero-content', { y: [-50, 100] }),
+        { target: '.hero', offset: ['start end', 'end start'] }
+      );
+
+      // === SERVICES ANIMATIONS ===
+      // Title & divider
+      animate('#services-title', { opacity: 0, y: 20 }, { duration: 0 });
+      animate('#services-divider', { scaleX: 0 }, { duration: 0 });
+
+      inView('#services', () => {
+        animate('#services-title', { opacity: 1, y: 0 }, { duration: 0.6, easing: 'ease-out' });
+        animate('#services-divider', { scaleX: 1 }, { duration: 0.5, delay: 0.2, easing: 'ease-out' });
+      }, { margin: '-100px' });
+
+      // Cards - staggered reveal
+      animate('.service-card', { opacity: 0, y: 40 }, { duration: 0 });
+
+      inView('#card1', () => {
+        animate('.service-card', { opacity: 1, y: 0 }, {
+          duration: 0.6,
+          delay: stagger(0.15),
+          easing: [0.22, 1, 0.36, 1]
+        });
+      }, { margin: '-50px' });
+
+      // Card hover effects
+      document.querySelectorAll('.service-card').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          animate(card, { scale: 1.03, y: -5 }, { duration: 0.3, easing: 'ease-out' });
+          animate(card.querySelector('img'), { scale: 1.08 }, { duration: 0.4, easing: 'ease-out' });
+        });
+        card.addEventListener('mouseleave', () => {
+          animate(card, { scale: 1, y: 0 }, { duration: 0.3, easing: 'ease-out' });
+          animate(card.querySelector('img'), { scale: 1 }, { duration: 0.4, easing: 'ease-out' });
+        });
       });
 
-      function blockScroll(e) {
-        // Only block downward scroll before reveal is done
-        if (!revealed) {
-          e.preventDefault();
-          reveal();
-        }
-      }
+      // === CTA ANIMATIONS ===
+      animate('#cta-card', { opacity: 0, scale: 0.95, y: 30 }, { duration: 0 });
 
-      function blockTouchScroll(e) {
-        if (!revealed) {
-          e.preventDefault();
-          reveal();
-        }
-      }
+      inView('#cta-card', () => {
+        animate('#cta-card', { opacity: 1, scale: 1, y: 0 }, {
+          duration: 0.8,
+          easing: [0.22, 1, 0.36, 1]
+        });
+      }, { margin: '-100px' });
 
-      // Intercept scroll until tagline finishes animating
-      window.addEventListener('wheel', blockScroll, { passive: false });
-      window.addEventListener('touchmove', blockTouchScroll, { passive: false });
-    })();
+      // CTA button hover
+      const ctaBtn = document.getElementById('cta-btn');
+      ctaBtn.addEventListener('mouseenter', () => {
+        animate(ctaBtn, { scale: 1.05 }, { duration: 0.2 });
+      });
+      ctaBtn.addEventListener('mouseleave', () => {
+        animate(ctaBtn, { scale: 1 }, { duration: 0.2 });
+      });
+
+    } else {
+      // Reduced motion: just show everything
+      document.querySelectorAll('.hero-tagline, .hero-title, .hero-overlay, .service-card, #cta-card, #services-title, #services-divider').forEach(el => {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+    }
   </script>
 
 </body>

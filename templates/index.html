@@ -1,312 +1,213 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>modelab</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Forum&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous">
-  <!-- Motion One -->
-  <script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.min.js"></script>
-  <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; background-color: #f6f8f5; color: #536942; }
-    a { text-decoration: none; }
+{% extends "base.html" %}
+{% block title %}modelab{% endblock title %}
 
-    /* NAV */
-    .site-header {
-      position: sticky; top: 0; left: 0; right: 0; z-index: 50;
-      padding: 0 2rem; height: 80px;
-      display: flex; align-items: center; justify-content: space-between;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid #e5e7eb;
-    }
-    .site-header > a { display: flex; align-items: center; }
-    .nav-links { display: flex; gap: 2rem; }
-    .nav-links a {
-      color: #536942; font-size: 0.875rem; font-weight: 300;
-      transition: opacity 0.2s;
-    }
-    .nav-links a:hover { opacity: 0.6; }
-    .hamburger-btn {
-      display: none;
-      background: #ffd936; border: none; border-radius: 4px;
-      padding: 8px 10px; cursor: pointer; line-height: 0;
-    }
+{% block head_extra %}
+<style>
+  /* HERO */
+  .hero {
+    position: relative; min-height: 605px; padding-top: 50px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; overflow: hidden;
+    background-image: url('/images/hero.png');
+    background-size: cover; background-position: center;
+  }
+  .hero-overlay { position: absolute; inset: 0; background-color: rgba(0,0,0,0.2); }
+  .hero-content { position: relative; z-index: 10; padding: 0 1.5rem; }
+  .hero-tagline {
+    color: rgba(255,255,255,0.8); font-size: 50px; font-weight: 300;
+    letter-spacing: -3px; margin: 0; line-height: 1.1;
+    opacity: 0; transform: translateY(-30px);
+  }
+  .hero-title {
+    color: #ffffff; font-size: 117px; font-weight: 300;
+    letter-spacing: -3px; line-height: 1; margin-top: -50px; margin-bottom: 0;
+    opacity: 0; transform: translateY(20px);
+  }
 
-    /* MOBILE MENU */
-    #mobile-menu {
-      display: none; position: fixed; inset: 0; z-index: 100;
-      background: #ffffff; flex-direction: column;
-      align-items: center; justify-content: center; gap: 2.5rem;
-    }
-    #mobile-menu.open { display: flex; }
-    #mobile-menu a { color: #536942; font-size: 1.5rem; font-weight: 300; }
-    #mobile-menu .close-btn {
-      position: absolute; top: 1.5rem; right: 2rem;
-      background: none; border: none; font-size: 1.5rem; color: #536942; cursor: pointer;
-    }
+  /* Floating elements */
+  .hero-float {
+    position: absolute; width: 60px; height: 60px;
+    border-radius: 50%; background: rgba(255, 217, 54, 0.15); z-index: 5;
+  }
 
-    /* HERO */
-    .hero {
-      position: relative; min-height: 605px; padding-top: 50px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; overflow: hidden;
-      background-image: url('/images/hero.png');
-      background-size: cover; background-position: center;
-    }
-    .hero-overlay { position: absolute; inset: 0; background-color: rgba(0,0,0,0.2); }
-    .hero-content { position: relative; z-index: 10; padding: 0 1.5rem; }
-    .hero-tagline {
-      color: rgba(255,255,255,0.8); font-size: 50px; font-weight: 300;
-      letter-spacing: -3px; margin: 0; line-height: 1.1;
-      opacity: 0; transform: translateY(-30px);
-    }
-    .hero-title {
-      color: #ffffff; font-size: 117px; font-weight: 300;
-      letter-spacing: -3px; line-height: 1; margin-top: -50px; margin-bottom: 0;
-      opacity: 0; transform: translateY(20px);
-    }
+  /* SERVICES */
+  .services-section { padding: 70px 1.5rem; background-color: #f6f8f5; }
+  .services-section h2 {
+    color: #536942; font-size: 40px; font-weight: 300;
+    text-align: center; letter-spacing: -2px; margin: 0 0 1rem;
+    opacity: 0; transform: translateY(20px);
+  }
+  .services-divider-wrap { display: flex; justify-content: center; margin-bottom: 2.5rem; }
+  .services-divider { 
+    background-color: #ffd936; width: 80px; height: 3px;
+    transform: scaleX(0); transform-origin: center;
+  }
+  .services-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem; max-width: 1200px; margin: 0 auto;
+  }
+  .service-card {
+    display: flex; flex-direction: column; padding: 20px;
+    background: #ffffff; border-radius: 12px; cursor: pointer;
+    opacity: 0; transform: translateY(40px);
+  }
+  .service-card-img { width: 100%; margin-bottom: 1rem; border-radius: 8px; overflow: hidden; }
+  .service-card-img img { width: 100%; border-radius: 8px; display: block; aspect-ratio: 1/1; object-fit: cover; }
+  .service-card h3 { font-family: 'Forum', display; color: #536942; font-size: 20px; font-weight: 400; margin: 0 0 9px; }
+  .service-card p { color: rgba(82,104,64,0.75); font-size: 14px; line-height: 1.6; margin: 0; }
 
-    /* Floating elements */
-    .hero-float {
-      position: absolute; width: 60px; height: 60px;
-      border-radius: 50%; background: rgba(255, 217, 54, 0.15); z-index: 5;
-    }
+  /* CTA */
+  .cta-section {
+    position: relative; min-height: 480px; padding: 8rem 1.5rem;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    background-image: url('/images/cta-bg.png');
+    background-size: cover; background-position: bottom center;
+  }
+  .cta-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px; padding: 3rem 4rem;
+    opacity: 0; transform: translateY(30px) scale(0.95);
+  }
+  .cta-section h2 { color: #ffffff; font-size: 58px; font-weight: 300; letter-spacing: -2px; margin: 0 0 2rem; }
+  .cta-btn {
+    display: inline-block; background-color: #ffd936; color: #536942;
+    font-weight: 500; font-size: 1rem; border-radius: 8px;
+    padding: 17px 40px; border: none; cursor: pointer;
+  }
 
-    /* SERVICES */
-    .services-section { padding: 70px 1.5rem; background-color: #f6f8f5; }
-    .services-section h2 {
-      color: #536942; font-size: 40px; font-weight: 300;
-      text-align: center; letter-spacing: -2px; margin: 0 0 1rem;
-      opacity: 0; transform: translateY(20px);
-    }
-    .services-divider-wrap { display: flex; justify-content: center; margin-bottom: 2.5rem; }
-    .services-divider { 
-      background-color: #ffd936; width: 80px; height: 3px;
-      transform: scaleX(0); transform-origin: center;
-    }
-    .services-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem; max-width: 1200px; margin: 0 auto;
-    }
-    .service-card {
-      display: flex; flex-direction: column; padding: 20px;
-      background: #ffffff; border-radius: 12px; cursor: pointer;
-      opacity: 0; transform: translateY(40px);
-    }
-    .service-card-img { width: 100%; margin-bottom: 1rem; border-radius: 8px; overflow: hidden; }
-    .service-card-img img { width: 100%; border-radius: 8px; display: block; aspect-ratio: 1/1; object-fit: cover; }
-    .service-card h3 { font-family: 'Forum', display; color: #536942; font-size: 20px; font-weight: 400; margin: 0 0 9px; }
-    .service-card p { color: rgba(82,104,64,0.75); font-size: 14px; line-height: 1.6; margin: 0; }
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    .hero-tagline { font-size: 28px; letter-spacing: -1px; }
+    .hero-title { font-size: 72px; letter-spacing: -2px; margin-top: -28px; }
+    .cta-section h2 { font-size: 36px; }
+    .cta-card { padding: 2rem; }
+    .services-grid { grid-template-columns: 1fr; }
+  }
+  @media (min-width: 641px) and (max-width: 1023px) {
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+  }
 
-    /* CTA */
-    .cta-section {
-      position: relative; min-height: 480px; padding: 8rem 1.5rem;
-      display: flex; align-items: center; justify-content: center; text-align: center;
-      background-image: url('/images/cta-bg.png');
-      background-size: cover; background-position: bottom center;
-    }
-    .cta-card {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 24px; padding: 3rem 4rem;
-      opacity: 0; transform: translateY(30px) scale(0.95);
-    }
-    .cta-section h2 { color: #ffffff; font-size: 58px; font-weight: 300; letter-spacing: -2px; margin: 0 0 2rem; }
-    .cta-btn {
-      display: inline-block; background-color: #ffd936; color: #536942;
-      font-weight: 500; font-size: 1rem; border-radius: 8px;
-      padding: 17px 40px; border: none; cursor: pointer;
-    }
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-tagline, .hero-title, .services-section h2, .services-divider,
+    .service-card, .cta-card { opacity: 1; transform: none; }
+  }
+</style>
+{% endblock head_extra %}
 
-    /* FOOTER */
-    .site-footer { background-color: #ffffff; padding: 2rem; display: flex; align-items: center; justify-content: flex-end; }
-    .footer-copy { color: #536942; font-size: 0.875rem; margin: 0; }
+{% block content %}
 
-    /* RESPONSIVE */
-    @media (max-width: 640px) {
-      .hero-tagline { font-size: 28px; letter-spacing: -1px; }
-      .hero-title { font-size: 72px; letter-spacing: -2px; margin-top: -28px; }
-      .cta-section h2 { font-size: 36px; }
-      .cta-card { padding: 2rem; }
-      .services-grid { grid-template-columns: 1fr; }
-      .nav-links { display: none; }
-      .hamburger-btn { display: block; }
-    }
-    @media (min-width: 641px) and (max-width: 1023px) {
-      .services-grid { grid-template-columns: repeat(2, 1fr); }
-      .nav-links { display: none; }
-      .hamburger-btn { display: block; }
-    }
-    @media (min-width: 1024px) {
-      .hamburger-btn { display: none; }
-      .nav-links { display: flex; }
-    }
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-overlay"></div>
+  
+  <!-- Floating animated circles -->
+  <div class="hero-float" id="float1" style="top: 20%; left: 10%;"></div>
+  <div class="hero-float" id="float2" style="top: 60%; right: 15%; width: 80px; height: 80px;"></div>
+  <div class="hero-float" id="float3" style="bottom: 30%; left: 20%; width: 40px; height: 40px;"></div>
+  
+  <div class="hero-content">
+    <p class="hero-tagline" id="hero-tagline">we build the data economy</p>
+    <h1 class="hero-title" id="hero-title">modelab</h1>
+  </div>
+</section>
 
-    /* Accessibility: reduced motion */
-    @media (prefers-reduced-motion: reduce) {
-      .hero-tagline, .hero-title, .services-section h2, .services-divider,
-      .service-card, .cta-card { opacity: 1; transform: none; }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- NAV -->
-  <header class="site-header">
-    <a href="/">
-      <img src="/images/logo.png" alt="modelab" style="height:80px; display:block;">
-    </a>
-    <nav class="nav-links">
-      <a href="/">Home</a>
-      <a href="/about">About</a>
-      <a href="/services">Services</a>
-      <a href="/contact">Contact</a>
-    </nav>
-    <button class="hamburger-btn" onclick="document.getElementById('mobile-menu').classList.add('open')" aria-label="Menu">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
-        <path d="M4 6h16M4 12h16M4 18h16"/>
-      </svg>
-    </button>
-  </header>
-
-  <!-- Mobile menu -->
-  <div id="mobile-menu">
-    <button class="close-btn" onclick="document.getElementById('mobile-menu').classList.remove('open')">✕</button>
-    <a href="/" onclick="document.getElementById('mobile-menu').classList.remove('open')">Home</a>
-    <a href="/about" onclick="document.getElementById('mobile-menu').classList.remove('open')">About</a>
-    <a href="/services" onclick="document.getElementById('mobile-menu').classList.remove('open')">Services</a>
-    <a href="/contact" onclick="document.getElementById('mobile-menu').classList.remove('open')">Contact</a>
+<!-- SERVICES -->
+<section id="services" class="services-section">
+  <h2 id="services-title">Our Services</h2>
+  <div class="services-divider-wrap">
+    <div class="services-divider" id="services-divider"></div>
   </div>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-overlay"></div>
-    
-    <!-- Floating animated circles -->
-    <div class="hero-float" id="float1" style="top: 20%; left: 10%;"></div>
-    <div class="hero-float" id="float2" style="top: 60%; right: 15%; width: 80px; height: 80px;"></div>
-    <div class="hero-float" id="float3" style="bottom: 30%; left: 20%; width: 40px; height: 40px;"></div>
-    
-    <div class="hero-content">
-      <p class="hero-tagline" id="hero-tagline">we build the data economy</p>
-      <h1 class="hero-title" id="hero-title">modelab</h1>
+  <div class="services-grid">
+    <div class="service-card" id="card1">
+      <div class="service-card-img"><img src="/images/outsourcing.png" alt="Outsourcing"></div>
+      <div><h3>Outsourcing</h3><p>Grow fast and flexibly. Embed our data engineers on key teams in your organization.</p></div>
     </div>
-  </section>
-
-  <!-- SERVICES -->
-  <section id="services" class="services-section">
-    <h2 id="services-title">Our Services</h2>
-    <div class="services-divider-wrap">
-      <div class="services-divider" id="services-divider"></div>
+    <div class="service-card" id="card2">
+      <div class="service-card-img"><img src="/images/consulting.png" alt="Consulting"></div>
+      <div><h3>Consulting</h3><p>Solve complex problems. Task our data and business experts with solving challenging problems.</p></div>
     </div>
-
-    <div class="services-grid">
-      <div class="service-card" id="card1">
-        <div class="service-card-img"><img src="/images/outsourcing.png" alt="Outsourcing"></div>
-        <div><h3>Outsourcing</h3><p>Grow fast and flexibly. Embed our data engineers on key teams in your organization.</p></div>
-      </div>
-      <div class="service-card" id="card2">
-        <div class="service-card-img"><img src="/images/consulting.png" alt="Consulting"></div>
-        <div><h3>Consulting</h3><p>Solve complex problems. Task our data and business experts with solving challenging problems.</p></div>
-      </div>
-      <div class="service-card" id="card3">
-        <div class="service-card-img"><img src="/images/algorithmics.png" alt="Algorithmics"></div>
-        <div><h3>Algorithmics</h3><p>Order algorithms as solutions: recommendation, ranking, sorting, detection, planning.</p></div>
-      </div>
-      <div class="service-card" id="card4">
-        <div class="service-card-img"><img src="/images/software.jpg" alt="Software"></div>
-        <div><h3>Software</h3><p>Build the pipelines and platforms that will power your business.</p></div>
-      </div>
+    <div class="service-card" id="card3">
+      <div class="service-card-img"><img src="/images/algorithmics.png" alt="Algorithmics"></div>
+      <div><h3>Algorithmics</h3><p>Order algorithms as solutions: recommendation, ranking, sorting, detection, planning.</p></div>
     </div>
-  </section>
-
-  <!-- CONTACT CTA -->
-  <section id="contact" class="cta-section">
-    <div class="cta-card" id="cta-card">
-      <h2 id="cta-title">Contact us</h2>
-      <a href="mailto:contact@modelab.cl" class="cta-btn" id="cta-btn">Email us</a>
+    <div class="service-card" id="card4">
+      <div class="service-card-img"><img src="/images/software.jpg" alt="Software"></div>
+      <div><h3>Software</h3><p>Build the pipelines and platforms that will power your business.</p></div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- FOOTER -->
-  <footer class="site-footer">
-    <p class="footer-copy">© modelab <span id="footer-year"></span></p>
-  </footer>
-  <script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
+<!-- CONTACT CTA -->
+<section id="contact" class="cta-section">
+  <div class="cta-card" id="cta-card">
+    <h2 id="cta-title">Contact us</h2>
+    <a href="mailto:contact@modelab.cl" class="cta-btn" id="cta-btn">Email us</a>
+  </div>
+</section>
 
-  <!-- Motion Animations -->
-  <script>
-    // Wait for Motion to be ready
-    document.addEventListener('DOMContentLoaded', () => {
-      if (!window.Motion) {
-        console.error('Motion library not loaded');
-        return;
-      }
-      
-      const { animate, stagger, inView, scroll } = window.Motion;
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+{% endblock content %}
 
-      if (prefersReducedMotion) {
-        // Show everything immediately
-        document.querySelectorAll('.hero-tagline, .hero-title, .service-card, .cta-card, .services-section h2, .services-divider').forEach(el => {
-          el.style.opacity = '1';
-          el.style.transform = 'none';
-        });
-        return;
-      }
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  if (!window.Motion) return;
+  
+  const { animate, stagger, inView } = window.Motion;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      // === HERO ANIMATIONS (on load) ===
-      animate('#hero-tagline', { opacity: 1, y: 0 }, { duration: 0.8, delay: 0.3, easing: 'ease-out' });
-      animate('#hero-title', { opacity: 1, y: 0 }, { duration: 1, delay: 0.5, easing: [0.22, 1, 0.36, 1] });
-
-      // Floating elements - continuous motion
-      animate('#float1', { y: [-15, 15, -15], scale: [1, 1.08, 1] }, { duration: 4, repeat: Infinity, easing: 'ease-in-out' });
-      animate('#float2', { y: [10, -10, 10], x: [0, 8, 0] }, { duration: 5, repeat: Infinity, easing: 'ease-in-out', delay: 0.5 });
-      animate('#float3', { y: [-8, 8, -8], rotate: [0, 8, 0] }, { duration: 3.5, repeat: Infinity, easing: 'ease-in-out', delay: 1 });
-
-      // === SERVICES ANIMATIONS (on scroll) ===
-      inView('#services-title', () => {
-        animate('#services-title', { opacity: 1, y: 0 }, { duration: 0.6 });
-        animate('#services-divider', { scaleX: 1 }, { duration: 0.5, delay: 0.2, easing: 'ease-out' });
-      }, { margin: '-100px' });
-
-      inView('.service-card', () => {
-        animate('.service-card', { opacity: 1, y: 0 }, { duration: 0.6, delay: stagger(0.12), easing: [0.22, 1, 0.36, 1] });
-      }, { margin: '-50px' });
-
-      // Card hover effects
-      document.querySelectorAll('.service-card').forEach(card => {
-        card.addEventListener('mouseenter', () => {
-          animate(card, { scale: 1.03, y: -5 }, { duration: 0.25 });
-          animate(card.querySelector('img'), { scale: 1.06 }, { duration: 0.35 });
-        });
-        card.addEventListener('mouseleave', () => {
-          animate(card, { scale: 1, y: 0 }, { duration: 0.25 });
-          animate(card.querySelector('img'), { scale: 1 }, { duration: 0.35 });
-        });
-      });
-
-      // === CTA ANIMATIONS ===
-      inView('#cta-card', () => {
-        animate('#cta-card', { opacity: 1, y: 0, scale: 1 }, { duration: 0.8, easing: [0.22, 1, 0.36, 1] });
-      }, { margin: '-100px' });
-
-      // CTA button hover
-      const ctaBtn = document.getElementById('cta-btn');
-      if (ctaBtn) {
-        ctaBtn.addEventListener('mouseenter', () => animate(ctaBtn, { scale: 1.05 }, { duration: 0.2 }));
-        ctaBtn.addEventListener('mouseleave', () => animate(ctaBtn, { scale: 1 }, { duration: 0.2 }));
-      }
+  if (prefersReducedMotion) {
+    document.querySelectorAll('.hero-tagline, .hero-title, .service-card, .cta-card, .services-section h2, .services-divider').forEach(el => {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
     });
-  </script>
+    return;
+  }
 
-</body>
-</html>
+  // HERO
+  animate('#hero-tagline', { opacity: 1, y: 0 }, { duration: 0.8, delay: 0.3 });
+  animate('#hero-title', { opacity: 1, y: 0 }, { duration: 1, delay: 0.5, easing: [0.22, 1, 0.36, 1] });
+
+  // Floating elements
+  animate('#float1', { y: [-15, 15, -15], scale: [1, 1.08, 1] }, { duration: 4, repeat: Infinity, easing: 'ease-in-out' });
+  animate('#float2', { y: [10, -10, 10], x: [0, 8, 0] }, { duration: 5, repeat: Infinity, easing: 'ease-in-out', delay: 0.5 });
+  animate('#float3', { y: [-8, 8, -8], rotate: [0, 8, 0] }, { duration: 3.5, repeat: Infinity, easing: 'ease-in-out', delay: 1 });
+
+  // SERVICES
+  inView('#services-title', () => {
+    animate('#services-title', { opacity: 1, y: 0 }, { duration: 0.6 });
+    animate('#services-divider', { scaleX: 1 }, { duration: 0.5, delay: 0.2 });
+  }, { margin: '-100px' });
+
+  inView('.service-card', () => {
+    animate('.service-card', { opacity: 1, y: 0 }, { duration: 0.6, delay: stagger(0.12), easing: [0.22, 1, 0.36, 1] });
+  }, { margin: '-50px' });
+
+  // Card hover
+  document.querySelectorAll('.service-card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      animate(card, { scale: 1.03, y: -5 }, { duration: 0.25 });
+      animate(card.querySelector('img'), { scale: 1.06 }, { duration: 0.35 });
+    });
+    card.addEventListener('mouseleave', () => {
+      animate(card, { scale: 1, y: 0 }, { duration: 0.25 });
+      animate(card.querySelector('img'), { scale: 1 }, { duration: 0.35 });
+    });
+  });
+
+  // CTA
+  inView('#cta-card', () => {
+    animate('#cta-card', { opacity: 1, y: 0, scale: 1 }, { duration: 0.8, easing: [0.22, 1, 0.36, 1] });
+  }, { margin: '-100px' });
+
+  const ctaBtn = document.getElementById('cta-btn');
+  if (ctaBtn) {
+    ctaBtn.addEventListener('mouseenter', () => animate(ctaBtn, { scale: 1.05 }, { duration: 0.2 }));
+    ctaBtn.addEventListener('mouseleave', () => animate(ctaBtn, { scale: 1 }, { duration: 0.2 }));
+  }
+});
+</script>
+{% endblock scripts %}

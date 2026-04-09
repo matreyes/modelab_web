@@ -10,10 +10,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Forum&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous">
-  <!-- Motion One - Animation Library -->
+  <!-- Motion One -->
   <script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.min.js"></script>
   <style>
-    /* NAV */
+    /* NAV - Solid background, no transparency */
     .site-header {
       position: sticky; top: 0; left: 0; right: 0; z-index: 50;
       padding: 0 2rem; height: 80px;
@@ -46,12 +46,8 @@
       background: none; border: none; font-size: 1.5rem; color: #536942; cursor: pointer;
     }
 
-    /* RESPONSIVE */
-    @media (max-width: 640px) {
-      .nav-links { display: none; }
-      .hamburger-btn { display: block; }
-    }
-    @media (min-width: 641px) and (max-width: 1023px) {
+    /* RESPONSIVE NAV */
+    @media (max-width: 1023px) {
       .nav-links { display: none; }
       .hamburger-btn { display: block; }
     }
@@ -60,6 +56,7 @@
       .nav-links { display: flex; }
     }
   </style>
+  {% block head_extra %}{% endblock head_extra %}
 </head>
 <body class="font-sans antialiased" style="background-color:#f6f8f5; color:#536942;">
 
@@ -69,10 +66,10 @@
       <img src="/images/logo.png" alt="modelab" style="height:80px; display:block;">
     </a>
     <nav class="nav-links">
-      <a href="/" class="hover:opacity-60 transition">Home</a>
-      <a href="/about" class="hover:opacity-60 transition">About</a>
-      <a href="/services" class="hover:opacity-60 transition">Services</a>
-      <a href="/contact" class="hover:opacity-60 transition">Contact</a>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/services">Services</a>
+      <a href="/contact">Contact</a>
     </nav>
     <button class="hamburger-btn" onclick="document.getElementById('mobile-menu').classList.add('open')" aria-label="Menu">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
@@ -104,6 +101,8 @@
     </nav>
     <p class="text-sm" style="color:#536942;">© modelab <script>document.write(new Date().getFullYear())</script></p>
   </footer>
+
+  {% block scripts %}{% endblock scripts %}
 
 </body>
 </html>

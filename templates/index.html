@@ -40,19 +40,22 @@
     opacity: 0;
   }
 
-  /* SCROLLY SECTION */
-  .scrolly {
-    display: grid; grid-template-columns: 1fr 1fr;
-    background: var(--bg);
-  }
-  .tree-panel {
+  /* PINNED SCROLLY: tall wrapper + sticky full-screen stage */
+  .scrolly-wrap { position: relative; height: 520vh; background: var(--bg); }
+  .scrolly-stage {
     position: sticky; top: 80px;
     height: calc(100vh - 80px);
-    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
   }
-  .tree-panel svg { width: min(100%, 640px); height: auto; max-height: 90%; }
+
+  /* Tree fixed behind everything */
+  #tree-svg {
+    position: absolute; top: 50%; left: 25%;
+    transform: translate(-50%, -50%);
+    height: 88%; width: auto; max-width: 46%;
+  }
   .tree-regen {
-    position: absolute; bottom: 1.25rem; left: 1.5rem;
+    position: absolute; bottom: 1.25rem; left: 1.5rem; z-index: 5;
     background: none; border: none; cursor: pointer;
     color: var(--ink-faint); font-size: 0.7rem;
     letter-spacing: 0.2em; text-transform: uppercase;
@@ -60,37 +63,29 @@
   }
   .tree-regen:hover { color: var(--ink); }
 
-  .service-block {
-    min-height: 100vh;
-    display: flex; align-items: center;
-    padding: 0 clamp(1.5rem, 5vw, 5rem);
+  /* Service texts: stacked in one spot, swapped by timeline */
+  .services-stack {
+    position: absolute; top: 50%; right: 6vw;
+    transform: translateY(-50%);
+    width: min(460px, 38vw);
   }
-  .service-inner {
-    max-width: 460px;
-    opacity: 0.12; transform: translateY(40px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .service-block.is-active .service-inner { opacity: 1; transform: translateY(0); }
-  .service-num {
-    font-size: 0.75rem; letter-spacing: 0.3em; color: var(--ink-faint);
+  .svc { position: relative; opacity: 0; visibility: hidden; }
+  .svc-num {
+    font-size: 0.75rem; letter-spacing: 0.3em; color: #dab200;
     display: block; margin-bottom: 1rem;
   }
-  .service-block.is-active .service-num { color: #dab200; }
-  .service-name {
+  .svc-name {
     font-weight: 300; font-size: clamp(32px, 3.5vw, 46px);
     letter-spacing: -0.02em; color: var(--ink); margin: 0 0 1.25rem;
   }
-  .service-desc {
+  .svc-desc {
     color: var(--ink-soft); font-size: 1rem; line-height: 1.8;
     font-weight: 300; margin: 0;
   }
-  .service-rule { width: 48px; height: 1px; background: var(--ink-faint); margin-top: 2rem; }
+  .svc-rule { width: 48px; height: 1px; background: var(--ink-faint); margin-top: 2rem; }
 
   /* CTA */
-  .cta-min {
-    background: #ffffff; text-align: center;
-    padding: 8rem 1.5rem;
-  }
+  .cta-min { background: #ffffff; text-align: center; padding: 8rem 1.5rem; }
   .cta-min h2 {
     font-weight: 300; font-size: clamp(36px, 5vw, 58px);
     letter-spacing: -0.02em; color: var(--ink); margin: 0 0 2.5rem;
@@ -108,17 +103,31 @@
   .trunk  { stroke-width: 2; }
   .leaf-dot { fill: var(--accent); }
 
-  /* Mobile fallback */
+  /* MOBILE: tree fills upper area, texts cycle at the bottom */
   @media (max-width: 900px) {
-    .scrolly { display: block; }
-    .tree-panel { position: relative; top: 0; height: 70vh; }
-    .service-block { min-height: 0; padding: 4rem 1.5rem; }
+    .scrolly-wrap { height: 480vh; }
+    #tree-svg {
+      left: 50%; top: 38%;
+      transform: translate(-50%, -50%);
+      height: 62%; width: auto; max-width: 92%;
+    }
+    .services-stack {
+      top: auto; bottom: 5vh; right: 1.5rem; left: 1.5rem;
+      transform: none; width: auto;
+    }
+    .svc-name { font-size: 30px; margin-bottom: 0.75rem; }
+    .svc-desc { font-size: 0.95rem; }
+    .svc-rule { margin-top: 1.25rem; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .hero-eyebrow, .hero-h1, .hero-scroll-hint { opacity: 1; transform: none; }
     .hero-line { transform: scaleX(1); }
-    .service-inner { opacity: 1; transform: none; }
+    .scrolly-wrap { height: auto; }
+    .scrolly-stage { position: static; height: auto; padding: 3rem 1.5rem; }
+    #tree-svg { position: static; transform: none; height: auto; width: 100%; max-width: 420px; margin: 0 auto; display: block; }
+    .services-stack { position: static; transform: none; width: auto; max-width: 560px; margin: 2.5rem auto 0; }
+    .svc { position: static; opacity: 1; visibility: visible; margin-bottom: 3rem; }
   }
 </style>
 {% endblock head_extra %}
@@ -133,45 +142,39 @@
   <p class="hero-scroll-hint" id="hero-hint">scroll</p>
 </section>
 
-<!-- SCROLLYTELLING: tree left, services right -->
-<section class="scrolly" id="scrolly">
-  <div class="tree-panel" id="tree-panel">
+<!-- PINNED SCROLLYTELLING -->
+<section class="scrolly-wrap" id="scrolly">
+  <div class="scrolly-stage">
     <svg id="tree-svg" viewBox="0 0 600 800" preserveAspectRatio="xMidYMax meet" aria-hidden="true"></svg>
+
+    <div class="services-stack" id="services-stack">
+      <article class="svc" data-service="1">
+        <span class="svc-num">01</span>
+        <h2 class="svc-name">Consulting</h2>
+        <p class="svc-desc">Solve complex problems. Task our data and business experts with challenging problems — more than 10 years of experience at the intersection of massive data and business.</p>
+        <div class="svc-rule"></div>
+      </article>
+      <article class="svc" data-service="2">
+        <span class="svc-num">02</span>
+        <h2 class="svc-name">Outsourcing</h2>
+        <p class="svc-desc">Grow fast and flexibly. Embed our data engineers on key teams in your organization, scaling capacity without friction.</p>
+        <div class="svc-rule"></div>
+      </article>
+      <article class="svc" data-service="3">
+        <span class="svc-num">03</span>
+        <h2 class="svc-name">Algorithmics</h2>
+        <p class="svc-desc">Order algorithms as solutions: recommendation, ranking, sorting, detection, planning — built to your specification.</p>
+        <div class="svc-rule"></div>
+      </article>
+      <article class="svc" data-service="4">
+        <span class="svc-num">04</span>
+        <h2 class="svc-name">Software</h2>
+        <p class="svc-desc">Build the pipelines and platforms that will power your business — from first commit to production at scale.</p>
+        <div class="svc-rule"></div>
+      </article>
+    </div>
+
     <button class="tree-regen" id="tree-regen" title="Generar otro árbol">↻ nuevo árbol</button>
-  </div>
-  <div class="services-flow">
-    <div class="service-block" data-service="1">
-      <div class="service-inner">
-        <span class="service-num">01</span>
-        <h2 class="service-name">Consulting</h2>
-        <p class="service-desc">Solve complex problems. Task our data and business experts with challenging problems — more than 10 years of experience at the intersection of massive data and business.</p>
-        <div class="service-rule"></div>
-      </div>
-    </div>
-    <div class="service-block" data-service="2">
-      <div class="service-inner">
-        <span class="service-num">02</span>
-        <h2 class="service-name">Outsourcing</h2>
-        <p class="service-desc">Grow fast and flexibly. Embed our data engineers on key teams in your organization, scaling capacity without friction.</p>
-        <div class="service-rule"></div>
-      </div>
-    </div>
-    <div class="service-block" data-service="3">
-      <div class="service-inner">
-        <span class="service-num">03</span>
-        <h2 class="service-name">Algorithmics</h2>
-        <p class="service-desc">Order algorithms as solutions: recommendation, ranking, sorting, detection, planning — built to your specification.</p>
-        <div class="service-rule"></div>
-      </div>
-    </div>
-    <div class="service-block" data-service="4">
-      <div class="service-inner">
-        <span class="service-num">04</span>
-        <h2 class="service-name">Software</h2>
-        <p class="service-desc">Build the pipelines and platforms that will power your business — from first commit to production at scale.</p>
-        <div class="service-rule"></div>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -213,14 +216,13 @@
   }
 
   /* ---------- generative geometric tree ----------
-     Angles are multiples of 45°. Trunk climbs from the bottom;
+     Angles in multiples of 45°. Trunk climbs from the bottom;
      four primary branches (one per service) sprout at alternating
-     sides of trunk points; secondary twigs grow with some chance. */
+     sides; secondary twigs grow with some probability. */
 
   const clampDir = (d) => Math.max(-180, Math.min(0, d));
 
   function walk(x, y, dir, segs, len, group, paths) {
-    // returns final {x, y} after drawing segments
     let fx = x, fy = y, fdir = dir;
     for (let i = 0; i < segs; i++) {
       const L = len * Math.pow(0.72, i);
@@ -264,13 +266,11 @@
       if (bx < 26 || bx > 574 || by < 26) { bx = anchor.x; by = anchor.y - L1; dir = -90; }
       paths.push({ x1: anchor.x, y1: anchor.y, x2: bx, y2: by, g: k });
 
-      // continuation with slight turn
       if (rng() < 0.85) {
         const dir2 = clampDir(dir + pick([-45, 0, 0, 45]));
         const out = walk(bx, by, dir2, 1, L1 * 0.72, k, paths);
         dots.push({ x: out.x, y: out.y, g: k });
 
-        // secondary twig from the elbow
         if (rng() < 0.7) {
           const dir3 = clampDir(dir2 + (side === -1 ? 45 : -45));
           const t3 = walk(bx, by, dir3, 1, L1 * 0.4, k, paths);
@@ -280,7 +280,6 @@
         dots.push({ x: bx, y: by, g: k });
       }
 
-      // extra twig from the anchor sometimes
       if (rng() < 0.4) {
         const dir4 = clampDir(dir + (side === -1 ? -45 : 45));
         const t4 = walk(anchor.x, anchor.y, dir4, 1, L1 * 0.45, k, paths);
@@ -296,7 +295,10 @@
     return { paths, dots };
   }
 
-  /* ---------- render ---------- */
+  /* ---------- render + timeline ---------- */
+  const svcEls = Array.from(document.querySelectorAll('.svc'));
+  const N = svcEls.length;
+
   function renderTree() {
     ScrollTrigger.getAll().forEach((t) => t.kill());
     svg.innerHTML = '';
@@ -326,50 +328,52 @@
 
     if (reduced) return;
 
-    // trunk grows while scrolling the first service block,
-    // each group k grows during its service block (scrubbed)
-    const blocks = document.querySelectorAll('.service-block');
-    blocks.forEach((block, i) => {
-      const g = i + 1;
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: block,
-          start: 'top bottom',
-          end: 'top top',
-          scrub: 0.6
-        }
-      });
-      // trunk segments draw during first block
-      if (g === 1) {
-        lines.filter((x) => x.g === 0).forEach((x) =>
-          tl.to(x.el, { strokeDashoffset: 0, duration: 1 }, '<0.05'));
-      }
-      lines.filter((x) => x.g === g).forEach((x) =>
-        tl.to(x.el, { strokeDashoffset: 0, duration: 1 }, '>'));
-      circles.filter((x) => x.g === g).forEach((x) =>
-        tl.to(x.el, { opacity: 1, duration: 0.5 }, '<0.1'));
-      // crown appears after the last block
-      if (g === 4) {
-        lines.filter((x) => x.g === 5).forEach((x) =>
-          tl.to(x.el, { strokeDashoffset: 0, duration: 1 }, '>'));
-        circles.filter((x) => x.g === 5).forEach((x) =>
-          tl.to(x.el, { opacity: 1, duration: 0.5 }, '<0.1'));
-      }
+    gsap.set(svcEls, { opacity: 0, visibility: 'hidden', y: 40 });
 
-      // active text highlight
-      ScrollTrigger.create({
-        trigger: block,
-        start: 'top 60%',
-        end: 'bottom 60%',
-        onEnter: () => block.classList.add('is-active'),
-        onLeave: () => block.classList.remove('is-active'),
-        onEnterBack: () => block.classList.add('is-active'),
-        onLeaveBack: () => block.classList.remove('is-active')
-      });
+    /* One master timeline scrubbed across the pinned section.
+       Each service gets a slot: text fades up, its branch grows
+       while the text holds, then the text fades away. */
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#scrolly',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.6
+      }
     });
 
-    // first block visible from the start
-    if (blocks[0]) blocks[0].classList.add('is-active');
+    const slot = 1 / N;
+    svcEls.forEach((el, i) => {
+      const at = i * slot;
+      const g = i + 1;
+
+      // text fades in from below
+      tl.set(el, { visibility: 'visible' }, at);
+      tl.to(el, { opacity: 1, y: 0, duration: slot * 0.18, ease: 'power2.out' }, at);
+
+      // trunk draws during the first slot
+      if (g === 1) {
+        lines.filter((x) => x.g === 0).forEach((x) =>
+          tl.to(x.el, { strokeDashoffset: 0, duration: slot * 0.3 }, at + slot * 0.05));
+      }
+
+      // this service's branch grows while its text holds
+      lines.filter((x) => x.g === g).forEach((x) =>
+        tl.to(x.el, { strokeDashoffset: 0, duration: slot * 0.28 }, at + slot * 0.2));
+      circles.filter((x) => x.g === g).forEach((x) =>
+        tl.to(x.el, { opacity: 1, duration: slot * 0.12 }, at + slot * 0.45));
+
+      // hold, then fade out upwards
+      tl.to(el, { opacity: 0, y: -28, duration: slot * 0.18, ease: 'power2.in' }, at + slot * 0.75);
+      tl.set(el, { visibility: 'hidden' }, at + slot * 0.95);
+    });
+
+    // crown appears once the last service has left
+    lines.filter((x) => x.g === 5).forEach((x) =>
+      tl.to(x.el, { strokeDashoffset: 0, duration: slot * 0.3 }, 1 - slot * 0.3));
+    circles.filter((x) => x.g === 5).forEach((x) =>
+      tl.to(x.el, { opacity: 1, duration: slot * 0.15 }, 1 - slot * 0.15));
+
     ScrollTrigger.refresh();
   }
 

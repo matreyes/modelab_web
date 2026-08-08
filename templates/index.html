@@ -221,19 +221,38 @@
      sides; secondary twigs grow with some probability. */
 
   const clampDir = (d) => Math.max(-180, Math.min(0, d));
+  const inBounds = (x, y) => x >= 26 && x <= 574 && y >= 26 && y <= 788;
 
-  function walk(x, y, dir, segs, len, group, paths) {
-    let fx = x, fy = y, fdir = dir;
-    for (let i = 0; i < segs; i++) {
-      const L = len * Math.pow(0.72, i);
-      const nx = fx + Math.cos(fdir * Math.PI / 180) * L;
-      const ny = fy + Math.sin(fdir * Math.PI / 180) * L;
-      if (nx < 26 || nx > 574 || ny < 26 || ny > 788) break;
-      paths.push({ x1: fx, y1: fy, x2: nx, y2: ny, g: group });
-      fx = nx; fy = ny;
-      if (rng() < 0.4) fdir = clampDir(fdir + pick([-45, 45]));
+  /* Recursive branch: draws 1-2 segments, spawns side twigs and
+     terminal children at ±45° multiples. Depth-capped. */
+  function branch(x, y, dir, depth, len, group, paths, dots) {
+    if (depth > 2 || len < 20 || !inBounds(x, y)) {
+      if (inBounds(x, y)) dots.push({ x, y, g: group });
+      return;
     }
-    return { x: fx, y: fy, dir: fdir };
+    let cx = x, cy = y, cdir = dir;
+    const segs = rng() < 0.5 ? 2 : 1;
+    for (let i = 0; i < segs; i++) {
+      const L = len * Math.pow(0.78, i);
+      const nx = cx + Math.cos(cdir * Math.PI / 180) * L;
+      const ny = cy + Math.sin(cdir * Math.PI / 180) * L;
+      if (!inBounds(nx, ny)) { dots.push({ x: cx, y: cy, g: group }); return; }
+      paths.push({ x1: cx, y1: cy, x2: nx, y2: ny, g: group });
+      cx = nx; cy = ny;
+      // side twig mid-branch
+      if (depth < 2 && rng() < 0.45) {
+        branch(cx, cy, clampDir(cdir + pick([-90, -45, 45, 90])), depth + 1, len * 0.5, group, paths, dots);
+      }
+      if (rng() < 0.35) cdir = clampDir(cdir + pick([-45, 45]));
+    }
+    // terminal children
+    const kids = rng() < 0.55 ? 2 : 1;
+    for (let k = 0; k < kids; k++) {
+      if (rng() < 0.85) {
+        branch(cx, cy, clampDir(cdir + pick([-45, 0, 0, 45])), depth + 1, len * 0.62, group, paths, dots);
+      }
+    }
+    dots.push({ x: cx, y: cy, g: group });
   }
 
   function genTree() {
@@ -241,11 +260,11 @@
     const paths = [];
     const dots = [];
 
-    // trunk: 4 segments climbing with occasional 45° wiggle
+    // trunk: 5 segments climbing with occasional 45° wiggle
     let tx = 300 + r(-28, 28), ty = 790, tdir = -90;
     const trunkPts = [{ x: tx, y: ty }];
-    for (let i = 0; i < 4; i++) {
-      const L = r(72, 104);
+    for (let i = 0; i < 5; i++) {
+      const L = r(66, 96);
       if (rng() < 0.35) tdir = pick([-135, -90, -90, -45]);
       let nx = tx + Math.cos(tdir * Math.PI / 180) * L;
       let ny = ty + Math.sin(tdir * Math.PI / 180) * L;
@@ -253,44 +272,28 @@
       paths.push({ x1: tx, y1: ty, x2: nx, y2: ny, g: 0 });
       tx = nx; ty = ny;
       trunkPts.push({ x: tx, y: ty });
+      // small trunk twig
+      if (i > 0 && rng() < 0.5) {
+        branch(tx, ty, clampDir(tdir + pick([-45, 45])), 2, r(24, 40), 0, paths, dots);
+      }
     }
 
     // four primary branches, alternating sides, one per service
     for (let k = 1; k <= 4; k++) {
       const anchor = trunkPts[Math.min(k, trunkPts.length - 1)];
       const side = k % 2 === 1 ? -1 : 1;
-      let dir = side === -1 ? pick([-135, -135, -90]) : pick([-45, -45, -90]);
-      const L1 = r(60, 96);
-      let bx = anchor.x + Math.cos(dir * Math.PI / 180) * L1;
-      let by = anchor.y + Math.sin(dir * Math.PI / 180) * L1;
-      if (bx < 26 || bx > 574 || by < 26) { bx = anchor.x; by = anchor.y - L1; dir = -90; }
-      paths.push({ x1: anchor.x, y1: anchor.y, x2: bx, y2: by, g: k });
+      const dir = side === -1 ? pick([-135, -135, -90]) : pick([-45, -45, -90]);
+      branch(anchor.x, anchor.y, dir, 0, r(72, 108), k, paths, dots);
 
-      if (rng() < 0.85) {
-        const dir2 = clampDir(dir + pick([-45, 0, 0, 45]));
-        const out = walk(bx, by, dir2, 1, L1 * 0.72, k, paths);
-        dots.push({ x: out.x, y: out.y, g: k });
-
-        if (rng() < 0.7) {
-          const dir3 = clampDir(dir2 + (side === -1 ? 45 : -45));
-          const t3 = walk(bx, by, dir3, 1, L1 * 0.4, k, paths);
-          if (t3.x !== bx || t3.y !== by) dots.push({ x: t3.x, y: t3.y, g: k });
-        }
-      } else {
-        dots.push({ x: bx, y: by, g: k });
-      }
-
-      if (rng() < 0.4) {
-        const dir4 = clampDir(dir + (side === -1 ? -45 : 45));
-        const t4 = walk(anchor.x, anchor.y, dir4, 1, L1 * 0.45, k, paths);
-        if (t4.x !== anchor.x || t4.y !== anchor.y) dots.push({ x: t4.x, y: t4.y, g: k });
+      // extra companion twig from the anchor
+      if (rng() < 0.6) {
+        branch(anchor.x, anchor.y, clampDir(dir + (side === -1 ? -45 : 45)), 1, r(38, 58), k, paths, dots);
       }
     }
 
-    // crown: small twig from trunk top
+    // crown at the top
     const top = trunkPts[trunkPts.length - 1];
-    const outTop = walk(top.x, top.y, pick([-135, -90, -90, -45]), 2, r(40, 64), 0, paths);
-    if (outTop.x !== top.x || outTop.y !== top.y) dots.push({ x: outTop.x, y: outTop.y, g: 5 });
+    branch(top.x, top.y, pick([-135, -90, -90, -45]), 1, r(46, 68), 5, paths, dots);
 
     return { paths, dots };
   }
@@ -353,15 +356,20 @@
 
       // trunk draws during the first slot
       if (g === 1) {
-        lines.filter((x) => x.g === 0).forEach((x) =>
-          tl.to(x.el, { strokeDashoffset: 0, duration: slot * 0.3 }, at + slot * 0.05));
+        const trunkLines = lines.filter((x) => x.g === 0);
+        const tStep = trunkLines.length ? (slot * 0.4) / trunkLines.length : 0;
+        trunkLines.forEach((x, j) =>
+          tl.to(x.el, { strokeDashoffset: 0, duration: Math.max(tStep * 1.6, slot * 0.05), ease: 'none' }, at + tStep * j));
       }
 
       // this service's branch grows while its text holds
-      lines.filter((x) => x.g === g).forEach((x) =>
-        tl.to(x.el, { strokeDashoffset: 0, duration: slot * 0.28 }, at + slot * 0.2));
-      circles.filter((x) => x.g === g).forEach((x) =>
-        tl.to(x.el, { opacity: 1, duration: slot * 0.12 }, at + slot * 0.45));
+      const groupLines = lines.filter((x) => x.g === g);
+      const growWindow = slot * 0.55;
+      const step = groupLines.length ? growWindow / groupLines.length : 0;
+      groupLines.forEach((x, j) =>
+        tl.to(x.el, { strokeDashoffset: 0, duration: Math.max(step * 1.6, slot * 0.05), ease: 'none' }, at + slot * 0.18 + step * j));
+      circles.filter((x) => x.g === g).forEach((x, j) =>
+        tl.to(x.el, { opacity: 1, duration: slot * 0.1 }, at + slot * 0.25 + step * j));
 
       // hold, then fade out upwards
       tl.to(el, { opacity: 0, y: -28, duration: slot * 0.18, ease: 'power2.in' }, at + slot * 0.75);
@@ -369,10 +377,12 @@
     });
 
     // crown appears once the last service has left
-    lines.filter((x) => x.g === 5).forEach((x) =>
-      tl.to(x.el, { strokeDashoffset: 0, duration: slot * 0.3 }, 1 - slot * 0.3));
+    const crownLines = lines.filter((x) => x.g === 5);
+    const cStep = crownLines.length ? (slot * 0.25) / crownLines.length : 0;
+    crownLines.forEach((x, j) =>
+      tl.to(x.el, { strokeDashoffset: 0, duration: Math.max(cStep * 1.6, slot * 0.04), ease: 'none' }, 1 - slot * 0.28 + cStep * j));
     circles.filter((x) => x.g === 5).forEach((x) =>
-      tl.to(x.el, { opacity: 1, duration: slot * 0.15 }, 1 - slot * 0.15));
+      tl.to(x.el, { opacity: 1, duration: slot * 0.1 }, 1 - slot * 0.12));
 
     ScrollTrigger.refresh();
   }

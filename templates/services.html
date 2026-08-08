@@ -113,9 +113,24 @@
     </div>
   </div>
 
-</section>
+  <!-- Applied AI: image left, text right -->
+  <div class="service-row flex flex-col md:flex-row items-stretch" id="row5">
+    <div class="service-row-image w-full md:w-1/2 service-image-wrap">
+      <img src="/images/applied-ai.svg" alt="Applied AI" class="w-full h-full" style="object-fit:cover; min-height:320px; display:block;">
+    </div>
+    <div class="service-row-text w-full md:w-1/2 flex items-center px-12 py-16" style="background:#f6f8f5;">
+      <div>
+        <h3 style="font-family:'Forum',serif; font-size:32px; color:#536942; font-weight:400; margin-bottom:16px; letter-spacing:-0.5px;">Applied AI</h3>
+        <p style="color:rgba(82,104,66,0.75); line-height:1.8; font-size:15px;">
+          Put AI to work where it matters. We design and implement AI systems that take on real tasks inside
+          your organization — automating processes, connecting AI to your existing tools, and giving your teams
+          capable digital coworkers. Delivered secure and integrated, on open standards — no lock-in.
+        </p>
+      </div>
+    </div>
+  </div>
 
-<!-- Quick Facts -->
+</section>
 <section id="facts-section" class="py-20 px-6" style="background:#f6f8f5;">
   <div class="max-w-5xl mx-auto">
     <h2 class="facts-title text-2xl font-light text-center mb-12" style="color:#536942; letter-spacing:-0.03em;">Quick Facts</h2>
@@ -179,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
   animate('#hero-title', { opacity: 1, y: 0 }, { duration: 0.6, delay: 0.2 });
 
   // === SERVICE ROWS ===
-  ['row1', 'row2', 'row3', 'row4'].forEach((id, i) => {
+  ['row1', 'row2', 'row3', 'row4', 'row5'].forEach((id, i) => {
     inView(`#${id}`, () => {
       animate(`#${id} .service-row-image`, { opacity: 1, x: 0 }, { duration: 0.65, delay: 0.05, easing: [0.22, 1, 0.36, 1] });
       animate(`#${id} .service-row-text`, { opacity: 1, x: 0 }, { duration: 0.65, delay: 0.15, easing: [0.22, 1, 0.36, 1] });
@@ -220,4 +235,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-{% endblock content %}}
+{% endblock content %}

@@ -41,7 +41,7 @@
   }
 
   /* PINNED SCROLLY: tall wrapper + sticky full-screen stage */
-  .scrolly-wrap { position: relative; height: 520vh; background: var(--bg); }
+  .scrolly-wrap { position: relative; height: 640vh; background: var(--bg); }
   .scrolly-stage {
     position: sticky; top: 80px;
     height: calc(100vh - 80px);
@@ -106,7 +106,7 @@
 
   /* MOBILE: tree fills upper area, texts cycle at the bottom */
   @media (max-width: 900px) {
-    .scrolly-wrap { height: 480vh; }
+    .scrolly-wrap { height: 600vh; }
     #tree-svg {
       left: 50%; top: 38%;
       transform: translate(-50%, -50%);
@@ -171,6 +171,12 @@
         <span class="svc-num">04</span>
         <h2 class="svc-name">Software</h2>
         <p class="svc-desc">Build the pipelines and platforms that will power your business — from first commit to production at scale.</p>
+        <div class="svc-rule"></div>
+      </article>
+      <article class="svc" data-service="5">
+        <span class="svc-num">05</span>
+        <h2 class="svc-name">Applied AI</h2>
+        <p class="svc-desc">Deploy AI where it pays off: workflows, agents and integrations that run real work — on open standards, no lock-in.</p>
         <div class="svc-rule"></div>
       </article>
     </div>
@@ -261,10 +267,10 @@
     const paths = [];
     const dots = [];
 
-    // trunk: 5 segments climbing with occasional 45° wiggle
+    // trunk: 6 segments climbing with occasional 45° wiggle
     let tx = 300 + r(-28, 28), ty = 790, tdir = -90;
     const trunkPts = [{ x: tx, y: ty }];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       const L = r(66, 96);
       if (i > 0 && rng() < 0.35) tdir = pick([-135, -90, -90, -45]);
       let nx = tx + Math.cos(tdir * Math.PI / 180) * L;
@@ -279,8 +285,8 @@
       }
     }
 
-    // four primary branches, alternating sides, one per service
-    for (let k = 1; k <= 4; k++) {
+    // five primary branches, alternating sides, one per service
+    for (let k = 1; k <= 5; k++) {
       const anchor = trunkPts[Math.min(k, trunkPts.length - 1)];
       const side = k % 2 === 1 ? -1 : 1;
       const dir = side === -1 ? pick([-135, -135, -90]) : pick([-45, -45, -90]);
@@ -294,7 +300,7 @@
 
     // crown at the top
     const top = trunkPts[trunkPts.length - 1];
-    branch(top.x, top.y, pick([-135, -90, -90, -45]), 1, r(46, 68), 5, paths, dots);
+    branch(top.x, top.y, pick([-135, -90, -90, -45]), 1, r(46, 68), 6, paths, dots);
 
     return { paths, dots };
   }
@@ -378,11 +384,11 @@
     });
 
     // crown appears once the last service has left
-    const crownLines = lines.filter((x) => x.g === 5);
+    const crownLines = lines.filter((x) => x.g === 6);
     const cStep = crownLines.length ? (slot * 0.25) / crownLines.length : 0;
     crownLines.forEach((x, j) =>
       tl.to(x.el, { strokeDashoffset: 0, duration: Math.max(cStep * 1.6, slot * 0.04), ease: 'none' }, 1 - slot * 0.28 + cStep * j));
-    circles.filter((x) => x.g === 5).forEach((x) =>
+    circles.filter((x) => x.g === 6).forEach((x) =>
       tl.to(x.el, { opacity: 1, duration: slot * 0.1 }, 1 - slot * 0.12));
 
     ScrollTrigger.refresh();

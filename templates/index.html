@@ -3,96 +3,122 @@
 
 {% block head_extra %}
 <style>
-  /* HERO */
-  .hero {
-    position: relative; min-height: 605px; padding-top: 50px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center; overflow: hidden;
-    background-image: url('/images/hero.png');
-    background-size: cover; background-position: center;
-  }
-  .hero-overlay { position: absolute; inset: 0; background-color: rgba(0,0,0,0.2); }
-  .hero-content { position: relative; z-index: 10; padding: 0 1.5rem; }
-  .hero-tagline {
-    color: rgba(255,255,255,0.8); font-size: 50px; font-weight: 300;
-    letter-spacing: -3px; margin: 0; line-height: 1.1;
-    opacity: 0; transform: translateY(-30px);
-  }
-  .hero-title {
-    color: #ffffff; font-size: 117px; font-weight: 300;
-    letter-spacing: -3px; line-height: 1; margin-top: -50px; margin-bottom: 0;
-    opacity: 0; transform: translateY(20px);
+  :root {
+    --ink: #536942;
+    --ink-soft: rgba(83, 105, 66, 0.72);
+    --ink-faint: rgba(83, 105, 66, 0.35);
+    --bg: #f8f9f6;
+    --accent: #ffd936;
   }
 
-  /* Floating elements */
-  .hero-float {
-    position: absolute; width: 60px; height: 60px;
-    border-radius: 50%; background: rgba(255, 217, 54, 0.15); z-index: 5;
+  /* HERO — minimal, typography only */
+  .hero-min {
+    min-height: calc(100vh - 80px);
+    display: flex; flex-direction: column;
+    align-items: flex-start; justify-content: center;
+    padding: 0 clamp(1.5rem, 8vw, 8rem);
+    background: var(--bg);
+  }
+  .hero-eyebrow {
+    font-size: 0.8rem; letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--ink-soft); margin: 0 0 1.5rem;
+    opacity: 0; transform: translateY(12px);
+  }
+  .hero-h1 {
+    font-weight: 300; color: var(--ink);
+    font-size: clamp(56px, 10vw, 128px);
+    line-height: 0.95; letter-spacing: -0.04em; margin: 0;
+    opacity: 0; transform: translateY(24px);
+  }
+  .hero-line {
+    width: 90px; height: 2px; background: var(--accent);
+    margin-top: 2.5rem; transform: scaleX(0); transform-origin: left;
+  }
+  .hero-scroll-hint {
+    margin-top: 4rem; font-size: 0.75rem; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--ink-faint);
+    opacity: 0;
   }
 
-  /* SERVICES */
-  .services-section { padding: 70px 1.5rem; background-color: #f6f8f5; }
-  .services-section h2 {
-    color: #536942; font-size: 40px; font-weight: 300;
-    text-align: center; letter-spacing: -2px; margin: 0 0 1rem;
-    opacity: 0; transform: translateY(20px);
+  /* SCROLLY SECTION */
+  .scrolly {
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: var(--bg);
   }
-  .services-divider-wrap { display: flex; justify-content: center; margin-bottom: 2.5rem; }
-  .services-divider { 
-    background-color: #ffd936; width: 80px; height: 3px;
-    transform: scaleX(0); transform-origin: center;
+  .tree-panel {
+    position: sticky; top: 80px;
+    height: calc(100vh - 80px);
+    display: flex; align-items: center; justify-content: center;
   }
-  .services-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem; max-width: 1200px; margin: 0 auto;
+  .tree-panel svg { width: min(100%, 640px); height: auto; max-height: 90%; }
+  .tree-regen {
+    position: absolute; bottom: 1.25rem; left: 1.5rem;
+    background: none; border: none; cursor: pointer;
+    color: var(--ink-faint); font-size: 0.7rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    transition: color 0.2s;
   }
-  .service-card {
-    display: flex; flex-direction: column; padding: 20px;
-    background: #ffffff; border-radius: 12px; cursor: pointer;
-    opacity: 0; transform: translateY(40px);
+  .tree-regen:hover { color: var(--ink); }
+
+  .service-block {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 0 clamp(1.5rem, 5vw, 5rem);
   }
-  .service-card-img { width: 100%; margin-bottom: 1rem; border-radius: 8px; overflow: hidden; }
-  .service-card-img img { width: 100%; border-radius: 8px; display: block; aspect-ratio: 1/1; object-fit: cover; }
-  .service-card h3 { font-family: 'Forum', display; color: #536942; font-size: 20px; font-weight: 400; margin: 0 0 9px; }
-  .service-card p { color: rgba(82,104,64,0.75); font-size: 14px; line-height: 1.6; margin: 0; }
+  .service-inner {
+    max-width: 460px;
+    opacity: 0.12; transform: translateY(40px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .service-block.is-active .service-inner { opacity: 1; transform: translateY(0); }
+  .service-num {
+    font-size: 0.75rem; letter-spacing: 0.3em; color: var(--ink-faint);
+    display: block; margin-bottom: 1rem;
+  }
+  .service-block.is-active .service-num { color: #dab200; }
+  .service-name {
+    font-weight: 300; font-size: clamp(32px, 3.5vw, 46px);
+    letter-spacing: -0.02em; color: var(--ink); margin: 0 0 1.25rem;
+  }
+  .service-desc {
+    color: var(--ink-soft); font-size: 1rem; line-height: 1.8;
+    font-weight: 300; margin: 0;
+  }
+  .service-rule { width: 48px; height: 1px; background: var(--ink-faint); margin-top: 2rem; }
 
   /* CTA */
-  .cta-section {
-    position: relative; min-height: 480px; padding: 8rem 1.5rem;
-    display: flex; align-items: center; justify-content: center; text-align: center;
-    background-image: url('/images/cta-bg.png');
-    background-size: cover; background-position: bottom center;
+  .cta-min {
+    background: #ffffff; text-align: center;
+    padding: 8rem 1.5rem;
   }
-  .cta-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 24px; padding: 3rem 4rem;
-    opacity: 0; transform: translateY(30px) scale(0.95);
+  .cta-min h2 {
+    font-weight: 300; font-size: clamp(36px, 5vw, 58px);
+    letter-spacing: -0.02em; color: var(--ink); margin: 0 0 2.5rem;
   }
-  .cta-section h2 { color: #ffffff; font-size: 58px; font-weight: 300; letter-spacing: -2px; margin: 0 0 2rem; }
-  .cta-btn {
-    display: inline-block; background-color: #ffd936; color: #536942;
-    font-weight: 500; font-size: 1rem; border-radius: 8px;
-    padding: 17px 40px; border: none; cursor: pointer;
+  .cta-min a.cta-btn {
+    display: inline-block; background: var(--accent); color: var(--ink);
+    font-size: 0.9rem; letter-spacing: 0.08em; font-weight: 500;
+    padding: 16px 40px; border-radius: 4px; text-decoration: none;
+    transition: transform 0.2s;
+  }
+  .cta-min a.cta-btn:hover { transform: translateY(-2px); }
+
+  /* Tree strokes */
+  .branch { stroke: var(--ink); stroke-width: 1.4; fill: none; stroke-linecap: round; }
+  .trunk  { stroke-width: 2; }
+  .leaf-dot { fill: var(--accent); }
+
+  /* Mobile fallback */
+  @media (max-width: 900px) {
+    .scrolly { display: block; }
+    .tree-panel { position: relative; top: 0; height: 70vh; }
+    .service-block { min-height: 0; padding: 4rem 1.5rem; }
   }
 
-  /* RESPONSIVE */
-  @media (max-width: 640px) {
-    .hero-tagline { font-size: 28px; letter-spacing: -1px; }
-    .hero-title { font-size: 72px; letter-spacing: -2px; margin-top: -28px; }
-    .cta-section h2 { font-size: 36px; }
-    .cta-card { padding: 2rem; }
-    .services-grid { grid-template-columns: 1fr; }
-  }
-  @media (min-width: 641px) and (max-width: 1023px) {
-    .services-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
-    .hero-tagline, .hero-title, .services-section h2, .services-divider,
-    .service-card, .cta-card { opacity: 1; transform: none; }
+    .hero-eyebrow, .hero-h1, .hero-scroll-hint { opacity: 1; transform: none; }
+    .hero-line { transform: scaleX(1); }
+    .service-inner { opacity: 1; transform: none; }
   }
 </style>
 {% endblock head_extra %}
@@ -100,114 +126,263 @@
 {% block content %}
 
 <!-- HERO -->
-<section class="hero">
-  <div class="hero-overlay"></div>
-  
-  <!-- Floating animated circles -->
-  <div class="hero-float" id="float1" style="top: 20%; left: 10%;"></div>
-  <div class="hero-float" id="float2" style="top: 60%; right: 15%; width: 80px; height: 80px;"></div>
-  <div class="hero-float" id="float3" style="bottom: 30%; left: 20%; width: 40px; height: 40px;"></div>
-  
-  <div class="hero-content">
-    <p class="hero-tagline" id="hero-tagline">we build the data economy</p>
-    <h1 class="hero-title" id="hero-title">modelab</h1>
+<section class="hero-min">
+  <p class="hero-eyebrow" id="hero-eyebrow">we build the data economy</p>
+  <h1 class="hero-h1" id="hero-h1">modelab</h1>
+  <div class="hero-line" id="hero-line"></div>
+  <p class="hero-scroll-hint" id="hero-hint">scroll</p>
+</section>
+
+<!-- SCROLLYTELLING: tree left, services right -->
+<section class="scrolly" id="scrolly">
+  <div class="tree-panel" id="tree-panel">
+    <svg id="tree-svg" viewBox="0 0 600 800" preserveAspectRatio="xMidYMax meet" aria-hidden="true"></svg>
+    <button class="tree-regen" id="tree-regen" title="Generar otro árbol">↻ nuevo árbol</button>
+  </div>
+  <div class="services-flow">
+    <div class="service-block" data-service="1">
+      <div class="service-inner">
+        <span class="service-num">01</span>
+        <h2 class="service-name">Consulting</h2>
+        <p class="service-desc">Solve complex problems. Task our data and business experts with challenging problems — more than 10 years of experience at the intersection of massive data and business.</p>
+        <div class="service-rule"></div>
+      </div>
+    </div>
+    <div class="service-block" data-service="2">
+      <div class="service-inner">
+        <span class="service-num">02</span>
+        <h2 class="service-name">Outsourcing</h2>
+        <p class="service-desc">Grow fast and flexibly. Embed our data engineers on key teams in your organization, scaling capacity without friction.</p>
+        <div class="service-rule"></div>
+      </div>
+    </div>
+    <div class="service-block" data-service="3">
+      <div class="service-inner">
+        <span class="service-num">03</span>
+        <h2 class="service-name">Algorithmics</h2>
+        <p class="service-desc">Order algorithms as solutions: recommendation, ranking, sorting, detection, planning — built to your specification.</p>
+        <div class="service-rule"></div>
+      </div>
+    </div>
+    <div class="service-block" data-service="4">
+      <div class="service-inner">
+        <span class="service-num">04</span>
+        <h2 class="service-name">Software</h2>
+        <p class="service-desc">Build the pipelines and platforms that will power your business — from first commit to production at scale.</p>
+        <div class="service-rule"></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- SERVICES -->
-<section id="services" class="services-section">
-  <h2 id="services-title">Our Services</h2>
-  <div class="services-divider-wrap">
-    <div class="services-divider" id="services-divider"></div>
-  </div>
-
-  <div class="services-grid">
-    <div class="service-card" id="card1">
-      <div class="service-card-img"><img src="/images/outsourcing.png" alt="Outsourcing"></div>
-      <div><h3>Outsourcing</h3><p>Grow fast and flexibly. Embed our data engineers on key teams in your organization.</p></div>
-    </div>
-    <div class="service-card" id="card2">
-      <div class="service-card-img"><img src="/images/consulting.png" alt="Consulting"></div>
-      <div><h3>Consulting</h3><p>Solve complex problems. Task our data and business experts with solving challenging problems.</p></div>
-    </div>
-    <div class="service-card" id="card3">
-      <div class="service-card-img"><img src="/images/algorithmics.png" alt="Algorithmics"></div>
-      <div><h3>Algorithmics</h3><p>Order algorithms as solutions: recommendation, ranking, sorting, detection, planning.</p></div>
-    </div>
-    <div class="service-card" id="card4">
-      <div class="service-card-img"><img src="/images/software.jpg" alt="Software"></div>
-      <div><h3>Software</h3><p>Build the pipelines and platforms that will power your business.</p></div>
-    </div>
-  </div>
+<!-- CTA -->
+<section class="cta-min">
+  <h2>Let's grow something together</h2>
+  <a class="cta-btn" href="mailto:contact@modelab.cl">contact@modelab.cl</a>
 </section>
 
-<!-- CONTACT CTA -->
-<section id="contact" class="cta-section">
-  <div class="cta-card" id="cta-card">
-    <h2 id="cta-title">Contact us</h2>
-    <a href="mailto:contact@modelab.cl" class="cta-btn" id="cta-btn">Email us</a>
-  </div>
-</section>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 {% endblock content %}
 
 {% block scripts %}
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  if (!window.Motion) return;
-  
-  const { animate, stagger, inView } = window.Motion;
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function () {
+  'use strict';
+  gsap.registerPlugin(ScrollTrigger);
 
-  if (prefersReducedMotion) {
-    document.querySelectorAll('.hero-tagline, .hero-title, .service-card, .cta-card, .services-section h2, .services-divider').forEach(el => {
-      el.style.opacity = '1';
-      el.style.transform = 'none';
-    });
-    return;
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('tree-svg');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- seeded RNG (one tree per load) ---------- */
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
   }
 
-  // HERO
-  animate('#hero-tagline', { opacity: 1, y: 0 }, { duration: 0.8, delay: 0.3 });
-  animate('#hero-title', { opacity: 1, y: 0 }, { duration: 1, delay: 0.5, easing: [0.22, 1, 0.36, 1] });
-
-  // Floating elements
-  animate('#float1', { y: [-15, 15, -15], scale: [1, 1.08, 1] }, { duration: 4, repeat: Infinity, easing: 'ease-in-out' });
-  animate('#float2', { y: [10, -10, 10], x: [0, 8, 0] }, { duration: 5, repeat: Infinity, easing: 'ease-in-out', delay: 0.5 });
-  animate('#float3', { y: [-8, 8, -8], rotate: [0, 8, 0] }, { duration: 3.5, repeat: Infinity, easing: 'ease-in-out', delay: 1 });
-
-  // SERVICES
-  inView('#services-title', () => {
-    animate('#services-title', { opacity: 1, y: 0 }, { duration: 0.6 });
-    animate('#services-divider', { scaleX: 1 }, { duration: 0.5, delay: 0.2 });
-  }, { margin: '-100px' });
-
-  inView('.service-card', () => {
-    animate('.service-card', { opacity: 1, y: 0 }, { duration: 0.6, delay: stagger(0.12), easing: [0.22, 1, 0.36, 1] });
-  }, { margin: '-50px' });
-
-  // Card hover
-  document.querySelectorAll('.service-card').forEach(card => {
-    card.addEventListener('mouseenter', () => {
-      animate(card, { scale: 1.03, y: -5 }, { duration: 0.25 });
-      animate(card.querySelector('img'), { scale: 1.06 }, { duration: 0.35 });
-    });
-    card.addEventListener('mouseleave', () => {
-      animate(card, { scale: 1, y: 0 }, { duration: 0.25 });
-      animate(card.querySelector('img'), { scale: 1 }, { duration: 0.35 });
-    });
-  });
-
-  // CTA
-  inView('#cta-card', () => {
-    animate('#cta-card', { opacity: 1, y: 0, scale: 1 }, { duration: 0.8, easing: [0.22, 1, 0.36, 1] });
-  }, { margin: '-100px' });
-
-  const ctaBtn = document.getElementById('cta-btn');
-  if (ctaBtn) {
-    ctaBtn.addEventListener('mouseenter', () => animate(ctaBtn, { scale: 1.05 }, { duration: 0.2 }));
-    ctaBtn.addEventListener('mouseleave', () => animate(ctaBtn, { scale: 1 }, { duration: 0.2 }));
+  let rng, r, pick;
+  function reseed() {
+    rng = mulberry32((Date.now() ^ Math.floor(Math.random() * 0xffffffff)) >>> 0);
+    r = (min, max) => min + rng() * (max - min);
+    pick = (arr) => arr[Math.floor(rng() * arr.length)];
   }
-});
+
+  /* ---------- generative geometric tree ----------
+     Angles are multiples of 45°. Trunk climbs from the bottom;
+     four primary branches (one per service) sprout at alternating
+     sides of trunk points; secondary twigs grow with some chance. */
+
+  const clampDir = (d) => Math.max(-180, Math.min(0, d));
+
+  function walk(x, y, dir, segs, len, group, paths) {
+    // returns final {x, y} after drawing segments
+    let fx = x, fy = y, fdir = dir;
+    for (let i = 0; i < segs; i++) {
+      const L = len * Math.pow(0.72, i);
+      const nx = fx + Math.cos(fdir * Math.PI / 180) * L;
+      const ny = fy + Math.sin(fdir * Math.PI / 180) * L;
+      if (nx < 26 || nx > 574 || ny < 26 || ny > 788) break;
+      paths.push({ x1: fx, y1: fy, x2: nx, y2: ny, g: group });
+      fx = nx; fy = ny;
+      if (rng() < 0.4) fdir = clampDir(fdir + pick([-45, 45]));
+    }
+    return { x: fx, y: fy, dir: fdir };
+  }
+
+  function genTree() {
+    reseed();
+    const paths = [];
+    const dots = [];
+
+    // trunk: 4 segments climbing with occasional 45° wiggle
+    let tx = 300 + r(-28, 28), ty = 790, tdir = -90;
+    const trunkPts = [{ x: tx, y: ty }];
+    for (let i = 0; i < 4; i++) {
+      const L = r(72, 104);
+      if (rng() < 0.35) tdir = pick([-135, -90, -90, -45]);
+      let nx = tx + Math.cos(tdir * Math.PI / 180) * L;
+      let ny = ty + Math.sin(tdir * Math.PI / 180) * L;
+      if (nx < 130 || nx > 470) { tdir = -90; nx = tx; ny = ty - L; }
+      paths.push({ x1: tx, y1: ty, x2: nx, y2: ny, g: 0 });
+      tx = nx; ty = ny;
+      trunkPts.push({ x: tx, y: ty });
+    }
+
+    // four primary branches, alternating sides, one per service
+    for (let k = 1; k <= 4; k++) {
+      const anchor = trunkPts[Math.min(k, trunkPts.length - 1)];
+      const side = k % 2 === 1 ? -1 : 1;
+      let dir = side === -1 ? pick([-135, -135, -90]) : pick([-45, -45, -90]);
+      const L1 = r(60, 96);
+      let bx = anchor.x + Math.cos(dir * Math.PI / 180) * L1;
+      let by = anchor.y + Math.sin(dir * Math.PI / 180) * L1;
+      if (bx < 26 || bx > 574 || by < 26) { bx = anchor.x; by = anchor.y - L1; dir = -90; }
+      paths.push({ x1: anchor.x, y1: anchor.y, x2: bx, y2: by, g: k });
+
+      // continuation with slight turn
+      if (rng() < 0.85) {
+        const dir2 = clampDir(dir + pick([-45, 0, 0, 45]));
+        const out = walk(bx, by, dir2, 1, L1 * 0.72, k, paths);
+        dots.push({ x: out.x, y: out.y, g: k });
+
+        // secondary twig from the elbow
+        if (rng() < 0.7) {
+          const dir3 = clampDir(dir2 + (side === -1 ? 45 : -45));
+          const t3 = walk(bx, by, dir3, 1, L1 * 0.4, k, paths);
+          if (t3.x !== bx || t3.y !== by) dots.push({ x: t3.x, y: t3.y, g: k });
+        }
+      } else {
+        dots.push({ x: bx, y: by, g: k });
+      }
+
+      // extra twig from the anchor sometimes
+      if (rng() < 0.4) {
+        const dir4 = clampDir(dir + (side === -1 ? -45 : 45));
+        const t4 = walk(anchor.x, anchor.y, dir4, 1, L1 * 0.45, k, paths);
+        if (t4.x !== anchor.x || t4.y !== anchor.y) dots.push({ x: t4.x, y: t4.y, g: k });
+      }
+    }
+
+    // crown: small twig from trunk top
+    const top = trunkPts[trunkPts.length - 1];
+    const outTop = walk(top.x, top.y, pick([-135, -90, -90, -45]), 2, r(40, 64), 0, paths);
+    if (outTop.x !== top.x || outTop.y !== top.y) dots.push({ x: outTop.x, y: outTop.y, g: 5 });
+
+    return { paths, dots };
+  }
+
+  /* ---------- render ---------- */
+  function renderTree() {
+    ScrollTrigger.getAll().forEach((t) => t.kill());
+    svg.innerHTML = '';
+    const { paths, dots } = genTree();
+
+    const lines = paths.map((p) => {
+      const l = document.createElementNS(SVG_NS, 'line');
+      l.setAttribute('x1', p.x1); l.setAttribute('y1', p.y1);
+      l.setAttribute('x2', p.x2); l.setAttribute('y2', p.y2);
+      l.setAttribute('class', 'branch' + (p.g === 0 ? ' trunk' : ''));
+      l.setAttribute('pathLength', '1');
+      l.style.strokeDasharray = '1';
+      l.style.strokeDashoffset = reduced ? '0' : '1';
+      svg.appendChild(l);
+      return { el: l, g: p.g };
+    });
+
+    const circles = dots.map((d) => {
+      const c = document.createElementNS(SVG_NS, 'circle');
+      c.setAttribute('cx', d.x); c.setAttribute('cy', d.y);
+      c.setAttribute('r', '3.5');
+      c.setAttribute('class', 'leaf-dot');
+      c.style.opacity = reduced ? '1' : '0';
+      svg.appendChild(c);
+      return { el: c, g: d.g };
+    });
+
+    if (reduced) return;
+
+    // trunk grows while scrolling the first service block,
+    // each group k grows during its service block (scrubbed)
+    const blocks = document.querySelectorAll('.service-block');
+    blocks.forEach((block, i) => {
+      const g = i + 1;
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: block,
+          start: 'top bottom',
+          end: 'top top',
+          scrub: 0.6
+        }
+      });
+      // trunk segments draw during first block
+      if (g === 1) {
+        lines.filter((x) => x.g === 0).forEach((x) =>
+          tl.to(x.el, { strokeDashoffset: 0, duration: 1 }, '<0.05'));
+      }
+      lines.filter((x) => x.g === g).forEach((x) =>
+        tl.to(x.el, { strokeDashoffset: 0, duration: 1 }, '>'));
+      circles.filter((x) => x.g === g).forEach((x) =>
+        tl.to(x.el, { opacity: 1, duration: 0.5 }, '<0.1'));
+      // crown appears after the last block
+      if (g === 4) {
+        lines.filter((x) => x.g === 5).forEach((x) =>
+          tl.to(x.el, { strokeDashoffset: 0, duration: 1 }, '>'));
+        circles.filter((x) => x.g === 5).forEach((x) =>
+          tl.to(x.el, { opacity: 1, duration: 0.5 }, '<0.1'));
+      }
+
+      // active text highlight
+      ScrollTrigger.create({
+        trigger: block,
+        start: 'top 60%',
+        end: 'bottom 60%',
+        onEnter: () => block.classList.add('is-active'),
+        onLeave: () => block.classList.remove('is-active'),
+        onEnterBack: () => block.classList.add('is-active'),
+        onLeaveBack: () => block.classList.remove('is-active')
+      });
+    });
+
+    // first block visible from the start
+    if (blocks[0]) blocks[0].classList.add('is-active');
+    ScrollTrigger.refresh();
+  }
+
+  /* ---------- hero entrance ---------- */
+  if (!reduced) {
+    gsap.to('#hero-eyebrow', { opacity: 1, y: 0, duration: 0.7, delay: 0.15 });
+    gsap.to('#hero-h1', { opacity: 1, y: 0, duration: 0.9, delay: 0.3, ease: 'power3.out' });
+    gsap.to('#hero-line', { scaleX: 1, duration: 0.6, delay: 0.7 });
+    gsap.to('#hero-hint', { opacity: 1, duration: 0.8, delay: 1 });
+  }
+
+  renderTree();
+  document.getElementById('tree-regen').addEventListener('click', renderTree);
+})();
 </script>
 {% endblock scripts %}

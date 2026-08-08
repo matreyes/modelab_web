@@ -265,7 +265,7 @@
     const trunkPts = [{ x: tx, y: ty }];
     for (let i = 0; i < 5; i++) {
       const L = r(66, 96);
-      if (rng() < 0.35) tdir = pick([-135, -90, -90, -45]);
+      if (i > 0 && rng() < 0.35) tdir = pick([-135, -90, -90, -45]);
       let nx = tx + Math.cos(tdir * Math.PI / 180) * L;
       let ny = ty + Math.sin(tdir * Math.PI / 180) * L;
       if (nx < 130 || nx > 470) { tdir = -90; nx = tx; ny = ty - L; }

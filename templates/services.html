@@ -22,8 +22,13 @@
 
   /* Image hover */
   .service-image-wrap { overflow: hidden; }
-  .service-image-wrap img { transition: transform 0.35s ease; will-change: transform; }
-  .service-image-wrap:hover img { transform: scale(1.06); }
+  .service-image-wrap img,
+  .service-image-wrap svg { transition: transform 0.35s ease; will-change: transform; }
+  .service-image-wrap:hover img,
+  .service-image-wrap:hover svg { transform: scale(1.06); }
+
+  /* Applied AI generative tree */
+  #applied-ai-tree { display: block; min-height: 320px; background: #f6f8f5; }
 
   /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
@@ -113,9 +118,24 @@
     </div>
   </div>
 
-</section>
+  <!-- Applied AI: image left, text right -->
+  <div class="service-row flex flex-col md:flex-row items-stretch" id="row5">
+    <div class="service-row-image w-full md:w-1/2 service-image-wrap">
+      <svg id="applied-ai-tree" class="w-full h-full" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Applied AI — generative tree"></svg>
+    </div>
+    <div class="service-row-text w-full md:w-1/2 flex items-center px-12 py-16" style="background:#f6f8f5;">
+      <div>
+        <h3 style="font-family:'Forum',serif; font-size:32px; color:#536942; font-weight:400; margin-bottom:16px; letter-spacing:-0.5px;">Applied AI</h3>
+        <p style="color:rgba(82,104,66,0.75); line-height:1.8; font-size:15px;">
+          Put AI to work where it matters. We design and implement AI systems that take on real tasks inside
+          your organization — automating processes, connecting AI to your existing tools, and giving your teams
+          capable digital coworkers. Delivered secure and integrated, on open standards — no lock-in.
+        </p>
+      </div>
+    </div>
+  </div>
 
-<!-- Quick Facts -->
+</section>
 <section id="facts-section" class="py-20 px-6" style="background:#f6f8f5;">
   <div class="max-w-5xl mx-auto">
     <h2 class="facts-title text-2xl font-light text-center mb-12" style="color:#536942; letter-spacing:-0.03em;">Quick Facts</h2>
@@ -147,6 +167,137 @@
 
 <!-- Motion Animations -->
 <script>
+/* ---------- generative tree for Applied AI (re-seeded per load/resize) ---------- */
+(function () {
+  'use strict';
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('applied-ai-tree');
+  if (!svg) return;
+
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  let rng, r, pick;
+  function reseed() {
+    rng = mulberry32((Date.now() ^ Math.floor(Math.random() * 0xffffffff)) >>> 0);
+    r = (min, max) => min + rng() * (max - min);
+    pick = (arr) => arr[Math.floor(rng() * arr.length)];
+  }
+
+  const clampDir = (d) => Math.max(-180, Math.min(0, d));
+  const inBounds = (x, y) => x >= 30 && x <= 770 && y >= 30 && y <= 776;
+
+  function branch(x, y, dir, depth, len, paths, dots) {
+    if (depth > 2 || len < 24 || !inBounds(x, y)) {
+      if (inBounds(x, y)) dots.push({ x, y });
+      return;
+    }
+    let cx = x, cy = y, cdir = dir;
+    const segs = rng() < 0.5 ? 2 : 1;
+    for (let i = 0; i < segs; i++) {
+      const L = len * Math.pow(0.78, i);
+      const nx = cx + Math.cos(cdir * Math.PI / 180) * L;
+      const ny = cy + Math.sin(cdir * Math.PI / 180) * L;
+      if (!inBounds(nx, ny)) { dots.push({ x: cx, y: cy }); return; }
+      paths.push({ x1: cx, y1: cy, x2: nx, y2: ny });
+      cx = nx; cy = ny;
+      if (depth < 2 && rng() < 0.45) {
+        branch(cx, cy, clampDir(cdir + pick([-90, -45, 45, 90])), depth + 1, len * 0.5, paths, dots);
+      }
+      if (rng() < 0.35) cdir = clampDir(cdir + pick([-45, 45]));
+    }
+    const kids = rng() < 0.55 ? 2 : 1;
+    for (let k = 0; k < kids; k++) {
+      if (rng() < 0.85) {
+        branch(cx, cy, clampDir(cdir + pick([-45, 0, 0, 45])), depth + 1, len * 0.62, paths, dots);
+      }
+    }
+    dots.push({ x: cx, y: cy });
+  }
+
+  function genTree() {
+    reseed();
+    const paths = [];
+    const dots = [];
+
+    // trunk: 6 segments, first one always vertical
+    let tx = 400 + r(-30, 30), ty = 770, tdir = -90;
+    const trunkPts = [{ x: tx, y: ty }];
+    for (let i = 0; i < 6; i++) {
+      const L = r(70, 100);
+      if (i > 0 && rng() < 0.35) tdir = pick([-135, -90, -90, -45]);
+      let nx = tx + Math.cos(tdir * Math.PI / 180) * L;
+      let ny = ty + Math.sin(tdir * Math.PI / 180) * L;
+      if (nx < 180 || nx > 620) { tdir = -90; nx = tx; ny = ty - L; }
+      paths.push({ x1: tx, y1: ty, x2: nx, y2: ny, trunk: true });
+      tx = nx; ty = ny;
+      trunkPts.push({ x: tx, y: ty });
+      if (i > 0 && rng() < 0.5) {
+        branch(tx, ty, clampDir(tdir + pick([-45, 45])), 2, r(26, 42), paths, dots);
+      }
+    }
+
+    // five primary branches, alternating sides
+    for (let k = 1; k <= 5; k++) {
+      const anchor = trunkPts[Math.min(k, trunkPts.length - 1)];
+      const side = k % 2 === 1 ? -1 : 1;
+      const dir = side === -1 ? pick([-135, -135, -90]) : pick([-45, -45, -90]);
+      branch(anchor.x, anchor.y, dir, 0, r(78, 114), paths, dots);
+      if (rng() < 0.6) {
+        branch(anchor.x, anchor.y, clampDir(dir + (side === -1 ? -45 : 45)), 1, r(40, 60), paths, dots);
+      }
+    }
+
+    // crown at the top
+    const top = trunkPts[trunkPts.length - 1];
+    branch(top.x, top.y, pick([-135, -90, -90, -45]), 1, r(50, 72), paths, dots);
+
+    return { paths, dots };
+  }
+
+  function renderTree() {
+    svg.innerHTML = '';
+    const { paths, dots } = genTree();
+
+    const g = document.createElementNS(SVG_NS, 'g');
+    g.setAttribute('stroke', '#536942');
+    g.setAttribute('stroke-linecap', 'round');
+    g.setAttribute('fill', 'none');
+
+    paths.forEach((p) => {
+      const l = document.createElementNS(SVG_NS, 'line');
+      l.setAttribute('x1', p.x1); l.setAttribute('y1', p.y1);
+      l.setAttribute('x2', p.x2); l.setAttribute('y2', p.y2);
+      l.setAttribute('stroke-width', p.trunk ? '4' : '2.5');
+      g.appendChild(l);
+    });
+    svg.appendChild(g);
+
+    dots.forEach((d) => {
+      const c = document.createElementNS(SVG_NS, 'circle');
+      c.setAttribute('cx', d.x); c.setAttribute('cy', d.y);
+      c.setAttribute('r', '4');
+      c.setAttribute('fill', '#ffd936');
+      svg.appendChild(c);
+    });
+  }
+
+  renderTree();
+
+  // re-seed on resize (debounced) so a different tree appears when the layout changes
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(renderTree, 300);
+  });
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
   if (!window.Motion) {
     console.warn('Motion not available');
@@ -179,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
   animate('#hero-title', { opacity: 1, y: 0 }, { duration: 0.6, delay: 0.2 });
 
   // === SERVICE ROWS ===
-  ['row1', 'row2', 'row3', 'row4'].forEach((id, i) => {
+  ['row1', 'row2', 'row3', 'row4', 'row5'].forEach((id, i) => {
     inView(`#${id}`, () => {
       animate(`#${id} .service-row-image`, { opacity: 1, x: 0 }, { duration: 0.65, delay: 0.05, easing: [0.22, 1, 0.36, 1] });
       animate(`#${id} .service-row-text`, { opacity: 1, x: 0 }, { duration: 0.65, delay: 0.15, easing: [0.22, 1, 0.36, 1] });
@@ -220,4 +371,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-{% endblock content %}}
+{% endblock content %}
